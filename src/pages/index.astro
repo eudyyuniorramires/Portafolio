@@ -1,11 +1,853 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const navItems = [
+	{ label: 'Inicio', href: '#inicio' },
+	{ label: 'Stack', href: '#stack' },
+	{ label: 'Proyectos', href: '#proyectos' },
+	{ label: 'Trayectoria', href: '#trayectoria' },
+	{ label: 'Contacto', href: '#contacto' }
+];
+
+const techList = ['JavaScript', 'React', 'SQL', 'Python', '.NET', 'Tailwind', 'Bootstrap'];
+
+const metricCards = [
+	{
+		title: '07+',
+		text: 'tecnologias clave dominadas',
+		icon: 'code'
+	},
+	{
+		title: '07',
+		text: 'proyectos destacados en portafolio',
+		icon: 'folder'
+	},
+	{
+		title: 'B2',
+		text: 'nivel de ingles en progreso profesional',
+		icon: 'language'
+	}
+];
+
+const projectCards = [
+	{
+		title: 'Frontend y Backend con impacto',
+		text: 'Experiencias visuales limpias, interfaces reactivas y arquitectura limpia',
+		icon: 'monitor'
+	},
+	{
+		title: 'Logica de negocio',
+		text: 'Capacidad para estructurar aplicaciones, conectar datos y construir funcionalidades utiles de punta a punta.',
+		icon: 'database'
+	},
+	{
+		title: 'Aprendizaje acelerado',
+		text: 'Base academica solida, curiosidad tecnica y enfoque constante en mejorar con cada proyecto.',
+		icon: 'rocket'
+	}
+];
+
+const trajectoryCards = [
+	{
+		kicker: 'FORMACION PRINCIPAL',
+		title: 'ITLA',
+		text: 'Desarrollo de Software',
+		badge: 'ITLA'
+	},
+	{
+		kicker: 'CURSO TECNICO',
+		title: 'Cisco',
+		text: 'IT Essentials',
+		badge: 'CISCO'
+	},
+	{
+		kicker: 'CURSO TECNICO',
+		title: 'Inteligencia Artificial/Python',
+		text: 'IA',
+		badge: 'SAMSUNG'
+	},
+
+	{
+		kicker: 'Curso',
+		title: 'Fundamentos de Ciberseguridad ',
+		text: 'Seguridad',
+		badge: 'MACROSeguridad-MASEG'
+	},
+	{
+		kicker: 'Capacitacion',
+		title: 'Fundamento de Scrum ',
+		text: 'Metodologia',
+		badge: 'Soylider.net'
+	},
+	
+	{
+		kicker: 'IDIOMAS',
+		title: 'Ingles por Inmersion',
+		text: 'Comunicacion y documentacion ',
+		badge: 'MESCYT'
+	}
+];
+
+const contacts = [
+	{
+		label: 'EMAIL',
+		value: 'eudyyuniorramires@gmail.com',
+		href: 'mailto:eudyyuniorramires@gmail.com',
+		icon: 'mail'
+	},
+	{
+		label: 'TELEFONO',
+		value: '+1 (849) 357-5980',
+		href: 'tel:+18493575980',
+		icon: 'phone'
+	},
+	{
+		label: 'GITHUB',
+		value: 'github.com/eudyyuniorramires',
+		href: 'https://github.com/eudyyuniorramires',
+		icon: 'github'
+	}
+];
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+	title="Eudy Yunior | Software Developer"
+	description="Portafolio personal de Eudy Yunior, software developer con enfoque en frontend, producto y experiencias web modernas."
+>
+	<div class="portfolio-shell" id="inicio">
+		<header class="topbar">
+			<a class="brand" href="#inicio" aria-label="Ir al inicio">
+				<div class="brand-dot"></div>
+				<div class="brand-copy">
+					<strong>EUDY YUNIOR</strong>
+					<span>SOFTWARE DEVELOPER</span>
+				</div>
+			</a>
+
+			<nav class="nav-links" aria-label="Principal">
+				{navItems.map((item) => (
+					<a href={item.href}>{item.label}</a>
+				))}
+			</nav>
+
+			<div class="topbar-actions">
+				<button
+					class="theme-toggle"
+					type="button"
+					id="theme-toggle"
+					aria-label="Cambiar tema"
+					aria-pressed="false"
+				>
+					<span class="toggle-track">
+						<span class="toggle-thumb"></span>
+					</span>
+				</button>
+
+				<a class="cv-button" href="/eudy-yunior-lorenzo-ramirez-cv.pdf" download>
+					Descargar CV
+				</a>
+			</div>
+		</header>
+
+		<main class="content">
+			<section class="hero-grid">
+				<div class="hero-photo-wrap">
+					<img
+						class="hero-photo"
+						src="/foto-eudy.png"
+						alt="Retrato profesional de Eudy Yunior"
+						width="200"
+						height="200"
+					/>
+				</div>
+
+				<div class="hero-copy">
+					<p class="eyebrow">PORTAFOLIO 2026 · FUTURE READY</p>
+					<h1 class="main-text" >Construyo soluciones de software integrales: desde sistemas robustos hasta aplicaciones web modernas.</h1>
+				</div>
+
+				<div class="terminal-card card">
+					<div class="terminal-head">
+						<span></span>
+						<span></span>
+						<span></span>
+					</div>
+
+					<pre>$ profile.scan --candidate "eudy-yunior"
+status: available for junior software roles
+focus: modern web interfaces / data-driven projects
+stack: JS, React, SQL, Python, .NET, Tailwind</pre>
+				</div>
+			</section>
+
+			<section class="section-block" id="stack">
+				<div class="section-header">
+					<p class="section-kicker">CAPACIDADES</p>
+					<h2>Stack tecnico con mentalidad de producto</h2>
+				</div>
+
+				<div class="metric-grid">
+					{metricCards.map((card) => (
+						<article class="metric-card card">
+							<div class="icon-wrap">
+								{card.icon === 'code' && (
+									<svg viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M8 8 4 12l4 4M16 8l4 4-4 4M13 5l-2 14" />
+									</svg>
+								)}
+								{card.icon === 'folder' && (
+									<svg viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M3 7h6l2 2h10v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" />
+									</svg>
+								)}
+								{card.icon === 'language' && (
+									<svg viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M4 5h8M8 5c0 6-2 10-4 12m4-12c0 4 2 8 4 10m4-1h5m-2.5-6-2.5 6m0 0-2.5 6m2.5-6h5" />
+									</svg>
+								)}
+							</div>
+							<div>
+								<h3>{card.title}</h3>
+								<p>{card.text}</p>
+							</div>
+						</article>
+					))}
+				</div>
+
+				<div class="tech-row" aria-label="Tecnologias principales">
+					{techList.map((item) => (
+						<span>{item}</span>
+					))}
+				</div>
+			</section>
+
+			<section class="section-block" id="proyectos">
+				<div class="section-header">
+					<p class="section-kicker">PROYECTOS DESTACADOS</p>
+					<h2>Construidos para demostrar criterio tecnico y capacidad real</h2>
+				</div>
+
+				<div class="project-grid">
+					{projectCards.map((card) => (
+						<article class="project-card card">
+							<div class="icon-wrap">
+								{card.icon === 'monitor' && (
+									<svg viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M4 6h16v10H4zM9 20h6M12 16v4" />
+									</svg>
+								)}
+								{card.icon === 'database' && (
+									<svg viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M12 5c4.4 0 8 1.3 8 3s-3.6 3-8 3-8-1.3-8-3 3.6-3 8-3Zm8 7c0 1.7-3.6 3-8 3s-8-1.3-8-3m16 4c0 1.7-3.6 3-8 3s-8-1.3-8-3" />
+									</svg>
+								)}
+								{card.icon === 'rocket' && (
+									<svg viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M14 4c3 1 5 3 6 6l-5 5-6-6 5-5Zm-6 6-3 1-2 5 5-2 8-8M10 16l-2 2m4-4 4 4" />
+									</svg>
+								)}
+							</div>
+							<h3>{card.title}</h3>
+							<p>{card.text}</p>
+						</article>
+					))}
+				</div>
+			</section>
+
+			<section class="section-block" id="trayectoria">
+				<div class="section-header">
+					<p class="section-kicker">TRAYECTORIA</p>
+				</div>
+
+				<div class="trajectory-grid">
+					{trajectoryCards.map((card) => (
+						<article class="trajectory-card card">
+							<div class="trajectory-top">
+								<p>{card.kicker}</p>
+								<span>{card.badge}</span>
+							</div>
+							<h3>{card.title}</h3>
+							<p>{card.text}</p>
+						</article>
+					))}
+				</div>
+			</section>
+
+			<section class="contact-grid" id="contacto">
+				<div class="contact-copy">
+					<p class="section-kicker">CONTACTO</p>
+					<h2>Listo para entrar en proyectos donde el codigo y la experiencia importan</h2>
+				</div>
+
+				<div class="contact-list">
+					{contacts.map((item) => (
+						<a
+							class="contact-card card"
+							href={item.href}
+							target={item.icon === 'github' ? '_blank' : undefined}
+							rel={item.icon === 'github' ? 'noreferrer' : undefined}
+						>
+							<div class="icon-wrap">
+								{item.icon === 'mail' && (
+									<svg viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M4 7h16v10H4zM4 8l8 6 8-6" />
+									</svg>
+								)}
+								{item.icon === 'phone' && (
+									<svg viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M7 4h4l1 4-2 2c1.3 2.3 3.2 4.2 5.5 5.5l2-2 4 1v4c0 1.1-.9 2-2 2C10.3 20 4 13.7 4 6a2 2 0 0 1 2-2Z" />
+									</svg>
+								)}
+								{item.icon === 'github' && (
+									<svg viewBox="0 0 24 24" aria-hidden="true">
+										<path d="M12 3a9 9 0 0 0-2.8 17.6c.4.1.6-.2.6-.5v-2c-2.4.5-2.9-1-2.9-1-.4-1-.9-1.3-.9-1.3-.7-.5.1-.5.1-.5.8.1 1.2.8 1.2.8.7 1.2 1.9.9 2.4.7.1-.5.3-.9.5-1.1-1.9-.2-3.9-.9-3.9-4.2 0-.9.3-1.6.8-2.2-.1-.2-.4-1 .1-2.1 0 0 .7-.2 2.3.8a8 8 0 0 1 4.2 0c1.6-1 2.3-.8 2.3-.8.5 1.1.2 1.9.1 2.1.5.6.8 1.3.8 2.2 0 3.3-2 4-3.9 4.2.3.2.6.8.6 1.6v2.4c0 .3.2.6.6.5A9 9 0 0 0 12 3Z" />
+									</svg>
+								)}
+							</div>
+							<div>
+								<p>{item.label}</p>
+								<strong>{item.value}</strong>
+							</div>
+						</a>
+					))}
+				</div>
+			</section>
+		</main>
+	</div>
+
+	<script is:inline>
+		const storageKey = 'eudy-theme';
+		const body = document.body;
+		const toggleButton = document.getElementById('theme-toggle');
+
+		const applyTheme = (theme) => {
+			body.classList.remove('light-mode', 'dark-mode');
+			body.classList.add(theme);
+			toggleButton?.setAttribute('aria-pressed', theme === 'dark-mode' ? 'true' : 'false');
+		};
+
+		const savedTheme = localStorage.getItem(storageKey);
+		const preferredTheme =
+			savedTheme ||
+			(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark-mode' : 'light-mode');
+
+		applyTheme(preferredTheme);
+
+		toggleButton?.addEventListener('click', () => {
+			const nextTheme = body.classList.contains('dark-mode') ? 'light-mode' : 'dark-mode';
+			applyTheme(nextTheme);
+			localStorage.setItem(storageKey, nextTheme);
+		});
+	</script>
 </Layout>
+
+<style>
+	:global(body) {
+		--bg: #ffffff;
+		--text: #111111;
+		--muted: #5d6472;
+		--card: #f5f5f7;
+		--card-strong: #ffffff;
+		--line: rgba(17, 17, 17, 0.09);
+		--accent: #12bfe6;
+		--accent-soft: rgba(18, 191, 230, 0.12);
+		--shadow: 0 14px 40px rgba(25, 25, 25, 0.17);
+		background: var(--bg);
+		color: var(--text);
+		transition:
+			background-color 220ms ease,
+			color 220ms ease;
+	}
+
+	:global(body.dark-mode) {
+		--bg: #0a0e17;
+		--text: #f0f0f0;
+		--muted: #98a3b7;
+		--card: #141a29;
+		--card-strong: #101625;
+		--line: rgba(240, 240, 240, 0.08);
+		--accent: #3ce7ff;
+		--accent-soft: rgba(60, 231, 255, 0.12);
+		--shadow: 0 24px 28px rgba(12, 6, 75, 0.33);
+	}
+
+	.portfolio-shell {
+		padding: 24px;
+	}
+
+	.topbar {
+		position: sticky;
+		top: 24px;
+		z-index: 20;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 20px;
+		max-width: 1180px;
+		margin: 0 auto 40px;
+		padding: 14px 18px;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--card-strong) 84%, transparent);
+		backdrop-filter: blur(18px);
+		box-shadow: var(--shadow);
+	}
+
+	.brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+	}
+
+	.brand-dot {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		background: var(--accent);
+		box-shadow: 0 0 0 6px var(--accent-soft);
+	}
+
+	.brand-copy {
+		display: grid;
+		gap: 2px;
+	}
+
+	.brand-copy strong,
+	.brand-copy span {
+		line-height: 1;
+	}
+
+	.brand-copy strong {
+		font-size: 0.82rem;
+		letter-spacing: 0.14em;
+	}
+
+	.brand-copy span {
+		font-size: 0.57rem;
+		letter-spacing: 0.18em;
+		color: var(--muted);
+	}
+
+	.nav-links {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 22px;
+	}
+
+	.nav-links a {
+		font-size: 0.82rem;
+		text-decoration: none;
+		color: var(--muted);
+		transition: color 180ms ease;
+	}
+
+	.nav-links a:hover,
+	.nav-links a:focus-visible {
+		color: var(--text);
+	}
+
+	.topbar-actions {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+	}
+
+	.theme-toggle {
+		border: 0;
+		padding: 0;
+		background: transparent;
+		cursor: pointer;
+	}
+
+	.toggle-track {
+		display: flex;
+		align-items: center;
+		width: 44px;
+		height: 24px;
+		padding: 3px;
+		border-radius: 999px;
+		background: var(--card);
+		border: 1px solid var(--line);
+		transition: background 180ms ease;
+	}
+
+	.toggle-thumb {
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		background: var(--muted);
+		transform: translateX(0);
+		transition:
+			transform 180ms ease,
+			background 180ms ease;
+	}
+
+	:global(body.dark-mode) .toggle-thumb {
+		transform: translateX(20px);
+		background: var(--accent);
+	}
+
+	.cv-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 10px 16px;
+		border-radius: 999px;
+		border: 1px solid var(--line);
+		background: var(--card-strong);
+		color: var(--text);
+		text-decoration: none;
+		font-size: 0.78rem;
+		font-weight: 600;
+		box-shadow: var(--shadow);
+	}
+
+	.content {
+		max-width: 1180px;
+		margin: 0 auto;
+	}
+
+	.hero-grid {
+		display: grid;
+		grid-template-columns: 200px minmax(0, 1fr) minmax(260px, 320px);
+		align-items: center;
+		gap: 30px;
+		padding: 28px 0 42px;
+	}
+
+	.hero-photo-wrap {
+		display: flex;
+		justify-content: center;
+	}
+
+	.hero-photo {
+		width: 200px;
+		height: 200px;
+		object-fit: cover;
+		border-radius: 50%;
+		border: 1px solid var(--line);
+		box-shadow: var(--shadow);
+		background: var(--card);
+	}
+
+	.hero-copy {
+		max-width: 520px;
+	}
+	.main-text{
+	 font-size: 2.52rem;
+	}
+
+	.eyebrow,
+	.section-kicker {
+		margin: 0 0 10px;
+		font-size: 0.72rem;
+		font-weight: 700;
+		letter-spacing: 0.22em;
+		color: var(--muted);
+	}
+
+	h1,
+	h2,
+	h3,
+	p {
+		margin: 0;
+	}
+
+	h1 {
+		font-size: clamp(2.2rem, 4.8vw, 4.3rem);
+		line-height: 0.98;
+		letter-spacing: -0.04em;
+	}
+
+	h2 {
+		font-size: clamp(2rem, 4vw, 3rem);
+		line-height: 1.02;
+		letter-spacing: -0.04em;
+		max-width: 640px;
+	}
+
+	h3 {
+		font-size: 1.2rem;
+		line-height: 1.15;
+		letter-spacing: -0.02em;
+	}
+
+	.card {
+		border: 1px solid var(--line);
+		border-radius: 18px;
+		background: var(--card);
+		box-shadow: var(--shadow);
+	}
+
+	.terminal-card {
+		padding: 16px;
+		background: var(--card-strong);
+	}
+
+	.terminal-head {
+		display: flex;
+		gap: 6px;
+		margin-bottom: 12px;
+	}
+
+	.terminal-head span {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: var(--line);
+	}
+
+	.terminal-head span:first-child {
+		background: #ff7b72;
+	}
+
+	.terminal-head span:nth-child(2) {
+		background: #f7c35f;
+	}
+
+	.terminal-head span:nth-child(3) {
+		background: #4fd38a;
+	}
+
+	.terminal-card pre {
+		margin: 0;
+		white-space: pre-wrap;
+		font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+		font-size: 0.73rem;
+		line-height: 1.7;
+		color: var(--muted);
+	}
+
+	.section-block {
+		padding: 24px 0 36px;
+	}
+
+	.section-header {
+		margin-bottom: 18px;
+	}
+
+	.metric-grid,
+	.project-grid,
+	.trajectory-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 16px;
+	}
+
+	.metric-card,
+	.project-card,
+	.trajectory-card {
+		padding: 18px;
+	}
+
+	.metric-card {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+	}
+
+	.metric-card h3 {
+		font-size: 2rem;
+		margin-bottom: 4px;
+	}
+
+	.metric-card p,
+	.project-card p,
+	.trajectory-card p,
+	.contact-card p,
+	.contact-card strong {
+		color: var(--muted);
+		font-size: 0.93rem;
+		line-height: 1.55;
+	}
+
+	.icon-wrap {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 42px;
+		height: 42px;
+		border-radius: 12px;
+		background: var(--accent-soft);
+		color: var(--accent);
+		flex-shrink: 0;
+	}
+
+	.icon-wrap svg {
+		width: 20px;
+		height: 20px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.7;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.tech-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		margin-top: 16px;
+	}
+
+	.tech-row span {
+		padding: 10px 14px;
+		border-radius: 999px;
+		border: 1px solid var(--line);
+		background: var(--card-strong);
+		font-size: 0.82rem;
+		color: var(--muted);
+	}
+
+	.project-card {
+		display: grid;
+		gap: 14px;
+	}
+
+	.trajectory-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		margin-bottom: 18px;
+	}
+
+	.trajectory-top p {
+		font-size: 0.68rem;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+	}
+
+	.trajectory-top span {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 48px;
+		padding: 6px 10px;
+		border-radius: 999px;
+		background: var(--card-strong);
+		border: 1px solid var(--line);
+		font-size: 0.72rem;
+		font-weight: 700;
+		color: var(--text);
+	}
+
+	.contact-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) 360px;
+		gap: 20px;
+		padding: 24px 0 80px;
+		align-items: start;
+	}
+
+	.contact-copy h2 {
+		max-width: 460px;
+	}
+
+	.contact-list {
+		display: grid;
+		gap: 14px;
+	}
+
+	.contact-card {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		padding: 18px;
+		text-decoration: none;
+	}
+
+	.contact-card strong {
+		display: block;
+		margin-top: 4px;
+		color: var(--text);
+		word-break: break-word;
+	}
+
+	.contact-card:hover,
+	.cv-button:hover {
+		transform: translateY(-1px);
+	}
+
+	.contact-card,
+	.cv-button {
+		transition:
+			transform 180ms ease,
+			border-color 180ms ease,
+			background-color 180ms ease;
+	}
+
+	@media (max-width: 1080px) {
+		.topbar {
+			grid-template-columns: 1fr;
+			border-radius: 24px;
+		}
+
+		.nav-links {
+			flex-wrap: wrap;
+		}
+
+		.topbar-actions,
+		.brand {
+			justify-content: center;
+		}
+
+		.hero-grid,
+		.contact-grid,
+		.metric-grid,
+		.project-grid,
+		.trajectory-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.hero-copy,
+		.contact-copy h2 {
+			max-width: none;
+		}
+
+		.terminal-card {
+			max-width: 420px;
+		}
+	}
+
+	@media (max-width: 720px) {
+		.portfolio-shell {
+			padding: 16px;
+		}
+
+		.topbar {
+			top: 16px;
+			margin-bottom: 28px;
+			padding: 16px;
+		}
+
+		.nav-links {
+			gap: 14px;
+		}
+
+		.nav-links a,
+		.cv-button {
+			font-size: 0.78rem;
+		}
+
+		.hero-grid {
+			gap: 20px;
+			padding-top: 8px;
+		}
+
+		.hero-photo {
+			width: 168px;
+			height: 168px;
+		}
+
+		.metric-card {
+			align-items: flex-start;
+		}
+
+		.topbar-actions {
+			flex-wrap: wrap;
+		}
+	}
+</style>
