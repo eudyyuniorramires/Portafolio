@@ -9,7 +9,17 @@ const navItems = [
 	{ label: 'Contacto', href: '#contacto' }
 ];
 
-const techList = ['JavaScript', 'React', 'SQL', 'Python', '.NET', 'Tailwind', 'Bootstrap'];
+const techList = [
+	{ label: 'JavaScript', icon: 'javascript', color: '#f5c518', background: 'rgba(245, 197, 24, 0.16)' },
+	{ label: 'React', icon: 'react', color: '#43d9ff', background: 'rgba(67, 217, 255, 0.16)' },
+	{ label: 'SQL', icon: 'sql', color: '#7c9bff', background: 'rgba(124, 155, 255, 0.16)' },
+	{ label: 'Python', icon: 'python', color: '#67c587', background: 'rgba(103, 197, 135, 0.16)' },
+	{ label: '.NET', icon: 'dotnet', color: '#b187ff', background: 'rgba(177, 135, 255, 0.16)' },
+	{ label: 'Tailwind', icon: 'tailwind', color: '#36d5ff', background: 'rgba(54, 213, 255, 0.16)' },
+	{ label: 'Bootstrap', icon: 'bootstrap', color: '#c48cff', background: 'rgba(196, 140, 255, 0.16)' }
+];
+
+const techTicker = [...techList, ...techList];
 
 const metricCards = [
 	{
@@ -163,7 +173,12 @@ const contacts = [
 
 				<div class="hero-copy">
 					<p class="eyebrow">PORTAFOLIO 2026 · FUTURE READY</p>
-					<h1 class="main-text" >Construyo soluciones de software integrales: desde sistemas robustos hasta aplicaciones web modernas.</h1>
+					<h1
+						class="main-text typewriter-text"
+						data-typewriter="Construyo soluciones de software integrales: desde sistemas robustos hasta aplicaciones web modernas."
+					>
+						<span id="hero-type-target"></span><span class="typing-caret" aria-hidden="true"></span>
+					</h1>
 				</div>
 
 				<div class="terminal-card card">
@@ -214,10 +229,71 @@ stack: JS, React, SQL, Python, .NET, Tailwind</pre>
 					))}
 				</div>
 
-				<div class="tech-row" aria-label="Tecnologias principales">
-					{techList.map((item) => (
-						<span>{item}</span>
-					))}
+				<div class="tech-marquee" aria-label="Tecnologias principales">
+					<div class="tech-track">
+						{techTicker.map((item) => (
+							<div
+								class="tech-chip"
+								style={`--tech-color:${item.color}; --tech-bg:${item.background};`}
+							>
+								<span class="tech-glyph" aria-hidden="true">
+									{item.icon === 'javascript' && (
+										<svg viewBox="0 0 24 24">
+											<rect x="3" y="3" width="18" height="18" rx="4"></rect>
+											<path d="M10 8v6.2c0 1.8-1 2.8-2.7 2.8-1.1 0-2-.4-2.8-1.2"></path>
+											<path d="M14.2 15.8c.6.8 1.3 1.2 2.3 1.2 1 0 1.7-.5 1.7-1.2 0-.9-.7-1.2-1.9-1.7l-.6-.2c-1.7-.7-2.8-1.6-2.8-3.4 0-1.7 1.3-3 3.4-3 1.5 0 2.5.5 3.3 1.8"></path>
+										</svg>
+									)}
+									{item.icon === 'react' && (
+										<svg viewBox="0 0 24 24">
+											<circle cx="12" cy="12" r="1.7"></circle>
+											<ellipse cx="12" cy="12" rx="8" ry="3.2"></ellipse>
+											<ellipse cx="12" cy="12" rx="8" ry="3.2" transform="rotate(60 12 12)"></ellipse>
+											<ellipse cx="12" cy="12" rx="8" ry="3.2" transform="rotate(120 12 12)"></ellipse>
+										</svg>
+									)}
+									{item.icon === 'sql' && (
+										<svg viewBox="0 0 24 24">
+											<ellipse cx="12" cy="6.5" rx="6.5" ry="2.8"></ellipse>
+											<path d="M5.5 6.5v5c0 1.6 2.9 2.8 6.5 2.8s6.5-1.2 6.5-2.8v-5"></path>
+											<path d="M5.5 11.5v5c0 1.6 2.9 2.8 6.5 2.8s6.5-1.2 6.5-2.8v-5"></path>
+										</svg>
+									)}
+									{item.icon === 'python' && (
+										<svg viewBox="0 0 24 24">
+											<path d="M12.5 4.5H9.3a3.3 3.3 0 0 0-3.3 3.3v2.4h6.5a2.5 2.5 0 0 1 2.5 2.5v5h1.7a3.3 3.3 0 0 0 3.3-3.3V9.8a5.3 5.3 0 0 0-5.3-5.3h-2.2Z"></path>
+											<path d="M11.5 19.5h3.2a3.3 3.3 0 0 0 3.3-3.3v-2.4h-6.5a2.5 2.5 0 0 1-2.5-2.5v-5H7.3A3.3 3.3 0 0 0 4 9.6v4.6a5.3 5.3 0 0 0 5.3 5.3h2.2Z"></path>
+											<circle cx="9" cy="7.8" r="0.8" fill="currentColor" stroke="none"></circle>
+											<circle cx="15" cy="16.2" r="0.8" fill="currentColor" stroke="none"></circle>
+										</svg>
+									)}
+									{item.icon === 'dotnet' && (
+										<svg viewBox="0 0 24 24">
+											<path d="M8 7.5 12 5l4 2.5v4.8L12 15l-4-2.7Z"></path>
+											<path d="M8 16.2 12 19l4-2.8"></path>
+											<circle cx="6.2" cy="12" r="1.3"></circle>
+											<circle cx="17.8" cy="12" r="1.3"></circle>
+											<path d="M7.4 12h2.2M14.4 12h2.2"></path>
+										</svg>
+									)}
+									{item.icon === 'tailwind' && (
+										<svg viewBox="0 0 24 24">
+											<path d="M7 9.5c1.3-2 2.8-2.8 4.6-2.5 1 .1 1.8.7 2.5 1.6.7.9 1.3 1.5 2 1.6 1.1.2 2.1-.4 3-1.9-1.3 2-2.8 2.8-4.6 2.5-1-.1-1.8-.7-2.5-1.6-.7-.9-1.3-1.5-2-1.6-1.1-.2-2.1.4-3 1.9Z"></path>
+											<path d="M4 14.5c1.3-2 2.8-2.8 4.6-2.5 1 .1 1.8.7 2.5 1.6.7.9 1.3 1.5 2 1.6 1.1.2 2.1-.4 3-1.9-1.3 2-2.8 2.8-4.6 2.5-1-.1-1.8-.7-2.5-1.6-.7-.9-1.3-1.5-2-1.6-1.1-.2-2.1.4-3 1.9Z"></path>
+										</svg>
+									)}
+									{item.icon === 'bootstrap' && (
+										<svg viewBox="0 0 24 24">
+											<path d="M8 4.5h6.5a3 3 0 0 1 3 3v.3a2.8 2.8 0 0 1-2 2.8 3 3 0 0 1 2.5 3v.4a3.5 3.5 0 0 1-3.5 3.5H8Z"></path>
+											<path d="M10.5 8h3.5a1.5 1.5 0 0 1 0 3h-3.5Z"></path>
+											<path d="M10.5 13h3.9a1.7 1.7 0 0 1 0 3.4h-3.9Z"></path>
+										</svg>
+									)}
+								</span>
+								<strong>{item.label}</strong>
+							</div>
+						))}
+					</div>
 				</div>
 			</section>
 
@@ -319,6 +395,8 @@ stack: JS, React, SQL, Python, .NET, Tailwind</pre>
 		const storageKey = 'eudy-theme';
 		const body = document.body;
 		const toggleButton = document.getElementById('theme-toggle');
+		const heroTypeTarget = document.getElementById('hero-type-target');
+		const heroTypeContainer = document.querySelector('[data-typewriter]');
 
 		const applyTheme = (theme) => {
 			body.classList.remove('light-mode', 'dark-mode');
@@ -338,6 +416,33 @@ stack: JS, React, SQL, Python, .NET, Tailwind</pre>
 			applyTheme(nextTheme);
 			localStorage.setItem(storageKey, nextTheme);
 		});
+
+		if (heroTypeTarget && heroTypeContainer) {
+			const fullText = heroTypeContainer.getAttribute('data-typewriter') ?? '';
+			const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+			if (reducedMotion) {
+				heroTypeTarget.textContent = fullText;
+				heroTypeContainer.classList.add('typing-complete');
+			} else {
+				let index = 0;
+
+				const typeNext = () => {
+					heroTypeTarget.textContent = fullText.slice(0, index);
+
+					if (index < fullText.length) {
+						index += 1;
+						const currentChar = fullText[index - 1];
+						const delay = currentChar === ' ' ? 25 : currentChar === ':' ? 85 : 38;
+						window.setTimeout(typeNext, delay);
+					} else {
+						heroTypeContainer.classList.add('typing-complete');
+					}
+				};
+
+				typeNext();
+			}
+		}
 	</script>
 </Layout>
 
@@ -539,6 +644,25 @@ stack: JS, React, SQL, Python, .NET, Tailwind</pre>
 	 font-size: 2.52rem;
 	}
 
+	.typewriter-text {
+		min-height: 3.25em;
+	}
+
+	.typing-caret {
+		display: inline-block;
+		width: 0.09em;
+		height: 0.96em;
+		margin-left: 0.08em;
+		background: var(--accent);
+		vertical-align: -0.08em;
+		animation: caret-blink 0.9s steps(1) infinite;
+		box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 55%, transparent);
+	}
+
+	.typewriter-text.typing-complete .typing-caret {
+		opacity: 0.72;
+	}
+
 	.eyebrow,
 	.section-kicker {
 		margin: 0 0 10px;
@@ -579,6 +703,21 @@ stack: JS, React, SQL, Python, .NET, Tailwind</pre>
 		border-radius: 18px;
 		background: var(--card);
 		box-shadow: var(--shadow);
+		transition:
+			transform 220ms ease,
+			box-shadow 220ms ease,
+			border-color 220ms ease,
+			background-color 220ms ease;
+	}
+
+	.card:hover {
+		transform: translateY(-6px);
+		border-color: color-mix(in srgb, var(--accent) 34%, var(--line));
+		box-shadow: 0 22px 48px rgba(17, 24, 39, 0.14);
+	}
+
+	:global(body.dark-mode) .card:hover {
+		box-shadow: 0 24px 56px rgba(0, 0, 0, 0.42);
 	}
 
 	.terminal-card {
@@ -685,20 +824,94 @@ stack: JS, React, SQL, Python, .NET, Tailwind</pre>
 		stroke-linejoin: round;
 	}
 
-	.tech-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 10px;
+	.tech-marquee {
+		position: relative;
 		margin-top: 16px;
-	}
-
-	.tech-row span {
-		padding: 10px 14px;
-		border-radius: 999px;
+		overflow: hidden;
+		border-radius: 22px;
 		border: 1px solid var(--line);
 		background: var(--card-strong);
-		font-size: 0.82rem;
-		color: var(--muted);
+		box-shadow: var(--shadow);
+	}
+
+	.tech-marquee::before,
+	.tech-marquee::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		width: 56px;
+		z-index: 1;
+		pointer-events: none;
+	}
+
+	.tech-marquee::before {
+		left: 0;
+		background: linear-gradient(90deg, var(--card-strong), transparent);
+	}
+
+	.tech-marquee::after {
+		right: 0;
+		background: linear-gradient(270deg, var(--card-strong), transparent);
+	}
+
+	.tech-track {
+		display: flex;
+		width: max-content;
+		gap: 12px;
+		padding: 14px 12px;
+		animation: tech-marquee 24s linear infinite;
+	}
+
+	.tech-marquee:hover .tech-track {
+		animation-play-state: paused;
+	}
+
+	.tech-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		min-width: 150px;
+		padding: 12px 14px;
+		border-radius: 16px;
+		border: 1px solid var(--line);
+		background: var(--card);
+		transition:
+			transform 180ms ease,
+			border-color 180ms ease,
+			background-color 180ms ease;
+	}
+
+	.tech-chip:hover {
+		transform: translateY(-4px) scale(1.01);
+		border-color: color-mix(in srgb, var(--tech-color) 42%, var(--line));
+	}
+
+	.tech-glyph {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		border-radius: 12px;
+		background: var(--tech-bg);
+		color: var(--tech-color);
+	}
+
+	.tech-glyph svg {
+		width: 23px;
+		height: 23px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.7;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.tech-chip strong {
+		font-size: 0.9rem;
+		font-weight: 700;
+		color: var(--text);
 	}
 
 	.project-card {
@@ -764,6 +977,31 @@ stack: JS, React, SQL, Python, .NET, Tailwind</pre>
 		margin-top: 4px;
 		color: var(--text);
 		word-break: break-word;
+	}
+
+	.metric-card:hover .icon-wrap,
+	.project-card:hover .icon-wrap,
+	.contact-card:hover .icon-wrap,
+	.tech-chip:hover .tech-glyph,
+	.trajectory-card:hover .trajectory-top span {
+		transform: scale(1.08);
+	}
+
+	.icon-wrap,
+	.tech-glyph,
+	.trajectory-top span {
+		transition:
+			transform 180ms ease,
+			background-color 180ms ease,
+			color 180ms ease,
+			border-color 180ms ease;
+	}
+
+	.metric-card:hover h3,
+	.project-card:hover h3,
+	.trajectory-card:hover h3,
+	.contact-card:hover strong {
+		color: var(--accent);
 	}
 
 	.contact-card:hover,
@@ -848,6 +1086,32 @@ stack: JS, React, SQL, Python, .NET, Tailwind</pre>
 
 		.topbar-actions {
 			flex-wrap: wrap;
+		}
+
+		.tech-chip {
+			min-width: 136px;
+		}
+	}
+
+	@keyframes tech-marquee {
+		from {
+			transform: translateX(0);
+		}
+
+		to {
+			transform: translateX(-50%);
+		}
+	}
+
+	@keyframes caret-blink {
+		0%,
+		49% {
+			opacity: 1;
+		}
+
+		50%,
+		100% {
+			opacity: 0;
 		}
 	}
 </style>
