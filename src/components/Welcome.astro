@@ -1,210 +1,668 @@
 ---
-import astroLogo from '../assets/astro.svg';
-import background from '../assets/background.svg';
+const profileLinks = [
+	{
+		label: 'Correo',
+		value: 'eudyyuniorramires@gmail.com',
+		href: 'mailto:eudyyuniorramires@gmail.com',
+		icon: 'mail',
+		external: false
+	},
+	{
+		label: 'Teléfono',
+		value: '849-357-5980',
+		href: 'tel:+18493575980',
+		icon: 'phone',
+		external: false
+	},
+	{
+		label: 'LinkedIn',
+		value: 'eudy-yunior-lorenzo-ramirez-aa9082288',
+		href: 'https://www.linkedin.com/in/eudy-yunior-lorenzo-ramirez-aa9082288',
+		icon: 'linkedin',
+		external: true
+	},
+	{
+		label: 'GitHub',
+		value: 'eudyyuniorramires',
+		href: 'https://github.com/eudyyuniorramires',
+		icon: 'github',
+		external: true
+	}
+];
 ---
 
-<div id="container">
-	<img id="background" src={background.src} alt="" fetchpriority="high" />
-	<main>
-		<section id="hero">
-			<a href="https://astro.build"
-				><img src={astroLogo.src} width="115" height="48" alt="Astro Homepage" /></a
-			>
-			<h1>
-				To get started, open the <code><pre>src/pages</pre></code> directory in your project.
-			</h1>
-			<section id="links">
-				<a class="button" href="https://docs.astro.build">Read our docs</a>
-				<a href="https://astro.build/chat"
-					>Join our Discord <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36"
-						><path
-							fill="currentColor"
-							d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.11 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.34 2.66-2a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11.1 105.25 105.25 0 0 0 32.19-16.14c2.64-27.38-4.51-51.11-18.9-72.15ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"
-						></path></svg
-					>
-				</a>
-			</section>
-		</section>
-	</main>
+<section class="hero-section" id="inicio" data-reveal-section>
+	<div class="hero-top-grid">
+		<!-- Fotografía con anillo orbital inspirado en Gargantua -->
+		<div class="hero-portrait-column">
+			<div class="orbital-avatar">
+				<span class="orbit-ring orbit-ring-outer" aria-hidden="true"></span>
+				<span class="orbit-ring orbit-ring-inner" aria-hidden="true"></span>
+				<div class="photo-frame">
+					<img
+						class="hero-photo"
+						src="/foto-eudy.png"
+						alt="Eudy Yunior Lorenzo Ramirez — Desarrollador Full Stack"
+						width="210"
+						height="210"
+						fetchpriority="high"
+					/>
+				</div>
+				<div class="location-pill">
+					<span class="status-pulse" aria-hidden="true"></span>
+					<span>Santo Domingo Este, RD</span>
+				</div>
+			</div>
+		</div>
 
-	<a href="https://astro.build/blog/astro-6-beta/" id="news" class="box">
-		<svg width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg"
-			><path
-				d="M24.667 12c1.333 1.414 2 3.192 2 5.334 0 4.62-4.934 5.7-7.334 12C18.444 28.567 18 27.456 18 26c0-4.642 6.667-7.053 6.667-14Zm-5.334-5.333c1.6 1.65 2.4 3.43 2.4 5.333 0 6.602-8.06 7.59-6.4 17.334C13.111 27.787 12 25.564 12 22.666c0-4.434 7.333-8 7.333-16Zm-6-5.333C15.111 3.555 16 5.556 16 7.333c0 8.333-11.333 10.962-5.333 22-3.488-.774-6-4-6-8 0-8.667 8.666-10 8.666-20Z"
-				fill="#111827"></path></svg
-		>
-		<h2>What's New in Astro 6.0?</h2>
-		<p>
-			Redesigned dev server, fonts, live collections, built-in CSP support, and more! Click to
-			explore Astro 6.0's new features.
-		</p>
-	</a>
-</div>
+		<!-- Identidad principal, rol, typewriter y cita de Interstellar -->
+		<div class="hero-copy">
+			<div class="eyebrow-row">
+				<span class="eyebrow-badge">PORTAFOLIO 2026 · FUTURE READY</span>
+				<span class="telemetry-tag">COORDS // 18.48° N · 69.85° W</span>
+			</div>
+
+			<p class="hero-role">
+				<strong>Eudy Yunior Lorenzo Ramirez</strong>
+				<span class="role-divider">·</span>
+				<span class="role-highlight">Desarrollador Full Stack</span>
+			</p>
+
+			<h1
+				class="hero-headline typewriter-text"
+				data-typewriter="Construyo soluciones Full Stack robustas: interfaces reactivas, APIs escalables y arquitecturas de datos."
+			>
+				<span id="hero-type-target"
+					>Construyo soluciones Full Stack robustas: interfaces reactivas, APIs escalables y arquitecturas de datos.</span
+				><span class="typing-caret" aria-hidden="true"></span>
+			</h1>
+
+			<blockquote class="interstellar-quote">
+				<p>
+					“Newton's Third Law: The only way to move forward, is to leave something behind”
+				</p>
+				<footer>— Interstellar · Endurance Mission Log</footer>
+			</blockquote>
+
+			<div class="hero-cta-row">
+				<a class="primary-cta" href="#proyectos">
+					<span>Explorar Proyectos</span>
+					<svg viewBox="0 0 24 24" aria-hidden="true">
+						<path d="M5 12h14m-6-6 6 6-6 6"></path>
+					</svg>
+				</a>
+				<a
+					class="secondary-cta"
+					href="/eudy-yunior-lorenzo-ramirez-cv.pdf"
+					download="Eudy-Yunior-Lorenzo-Ramirez-CV.pdf"
+				>
+					<span>Descargar CV</span>
+				</a>
+			</div>
+		</div>
+
+		<!-- Consola de escaneo de candidato -->
+		<aside class="terminal-card space-card" aria-label="Consola de perfil técnico">
+			<div class="terminal-head">
+				<div class="terminal-dots" aria-hidden="true">
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+				<span class="terminal-title">ENDURANCE // TELEMETRY</span>
+			</div>
+
+			<pre class="terminal-body"><span class="cmd-prompt">$</span> <span class="cmd-exec">profile.scan --candidate "eudy-yunior"</span>
+<span class="cmd-key">role:</span>     Desarrollador Full Stack
+<span class="cmd-key">base:</span>     Santo Domingo Este, RD
+<span class="cmd-key">backend:</span>  C#, .NET 8, ASP.NET Core, EF Core, JWT
+<span class="cmd-key">frontend:</span> React, JS/TS, Tailwind, Bootstrap
+<span class="cmd-key">data:</span>     SQL Server, SQL Azure, ETL / DW
+<span class="cmd-key">status:</span>   <span class="cmd-ok">ONLINE · OPEN FOR OPPORTUNITIES</span></pre>
+		</aside>
+	</div>
+
+	<!-- Franja translúcida con enlaces de perfil y contacto directo -->
+	<div class="profile-links-strip" aria-label="Enlaces directos de perfil y contacto">
+		{
+			profileLinks.map((link) => (
+				<a
+					class="profile-link-chip space-card"
+					href={link.href}
+					target={link.external ? '_blank' : undefined}
+					rel={link.external ? 'noopener noreferrer' : undefined}
+				>
+					<span class="chip-icon" aria-hidden="true">
+						{link.icon === 'mail' && (
+							<svg viewBox="0 0 24 24">
+								<rect x="3" y="5" width="18" height="14" rx="2" />
+								<path d="m3 7 9 6 9-6" />
+							</svg>
+						)}
+						{link.icon === 'phone' && (
+							<svg viewBox="0 0 24 24">
+								<path d="M6.6 4h3.4l1.3 4.2-2.1 1.8a13.5 13.5 0 0 0 5.8 5.8l1.8-2.1L21 15v3.4a2 2 0 0 1-2.2 2A16.8 16.8 0 0 1 4.6 6.2 2 2 0 0 1 6.6 4Z" />
+							</svg>
+						)}
+						{link.icon === 'linkedin' && (
+							<svg viewBox="0 0 24 24">
+								<rect x="3" y="3" width="18" height="18" rx="3" />
+								<path d="M8 11v5M8 8v.01M12 16v-5c0-1.4 1-2.2 2.2-2.2S16.5 9.6 16.5 11v5" />
+							</svg>
+						)}
+						{link.icon === 'github' && (
+							<svg viewBox="0 0 24 24">
+								<path d="M12 3a9 9 0 0 0-2.85 17.54c.45.08.62-.2.62-.44v-1.7c-2.5.54-3.03-1.08-3.03-1.08-.41-1.04-1-1.32-1-1.32-.82-.56.06-.55.06-.55.9.06 1.38.93 1.38.93.8 1.38 2.1.98 2.62.75.08-.58.31-.98.57-1.2-2-.23-4.1-1-4.1-4.43 0-.98.35-1.78.93-2.41-.1-.23-.4-1.15.09-2.4 0 0 .75-.24 2.47.92a8.56 8.56 0 0 1 4.5 0c1.72-1.16 2.47-.92 2.47-.92.49 1.25.19 2.17.09 2.4.58.63.93 1.43.93 2.41 0 3.44-2.1 4.2-4.11 4.42.32.28.61.83.61 1.67v2.47c0 .24.16.53.62.44A9 9 0 0 0 12 3Z" />
+							</svg>
+						)}
+					</span>
+					<div class="chip-meta">
+						<span>{link.label}</span>
+						<strong>{link.value}</strong>
+					</div>
+				</a>
+			))
+		}
+	</div>
+</section>
+
+<script>
+	const initHeroTypewriter = () => {
+		const target = document.getElementById('hero-type-target');
+		const container = document.querySelector('[data-typewriter]');
+		if (!target || !container || container.getAttribute('data-typed') === 'true') return;
+		container.setAttribute('data-typed', 'true');
+
+		const fullText = container.getAttribute('data-typewriter') ?? '';
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		if (reducedMotion) {
+			target.textContent = fullText;
+			container.classList.add('typing-complete');
+			return;
+		}
+
+		target.textContent = '';
+		let index = 0;
+
+		const typeNext = () => {
+			target.textContent = fullText.slice(0, index);
+			if (index < fullText.length) {
+				index += 1;
+				const currentChar = fullText[index - 1];
+				const delay = currentChar === ' ' ? 18 : currentChar === ':' || currentChar === ',' ? 65 : 28;
+				window.setTimeout(typeNext, delay);
+			} else {
+				container.classList.add('typing-complete');
+			}
+		};
+
+		typeNext();
+	};
+
+	initHeroTypewriter();
+	document.addEventListener('astro:after-swap', initHeroTypewriter);
+</script>
 
 <style>
-	#background {
-		position: fixed;
-		top: 0;
-		left: 0;
+	.hero-section {
+		padding: 18px 0 56px;
+		display: grid;
+		gap: 28px;
+	}
+
+	.hero-top-grid {
+		display: grid;
+		grid-template-columns: 230px minmax(0, 1fr) minmax(300px, 360px);
+		align-items: center;
+		gap: 32px;
+	}
+
+	.hero-portrait-column {
+		display: flex;
+		justify-content: center;
+	}
+
+	.orbital-avatar {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 14px;
+	}
+
+	.orbit-ring {
+		position: absolute;
+		border-radius: 50%;
+		pointer-events: none;
+	}
+
+	.orbit-ring-outer {
+		width: 236px;
+		height: 236px;
+		top: 1px;
+		border: 1px dashed rgba(251, 191, 36, 0.34);
+		animation: slow-orbit 28s linear infinite;
+	}
+
+	.orbit-ring-inner {
+		width: 218px;
+		height: 218px;
+		top: 10px;
+		border: 1px solid rgba(255, 244, 214, 0.16);
+		box-shadow:
+			0 0 38px rgba(245, 158, 11, 0.2),
+			inset 0 0 24px rgba(245, 158, 11, 0.14);
+	}
+
+	.photo-frame {
+		position: relative;
+		width: 204px;
+		height: 204px;
+		border-radius: 50%;
+		overflow: hidden;
+		border: 2px solid rgba(251, 191, 36, 0.55);
+		background: radial-gradient(circle at 50% 35%, #1e293b, #090d16);
+		box-shadow:
+			0 22px 50px rgba(0, 0, 0, 0.72),
+			0 0 32px rgba(245, 158, 11, 0.22);
+	}
+
+	.photo-frame::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 50%;
+		box-shadow: inset 0 0 28px rgba(5, 8, 18, 0.52);
+		pointer-events: none;
+	}
+
+	.hero-photo {
 		width: 100%;
 		height: 100%;
-		z-index: -1;
-		filter: blur(100px);
+		object-fit: cover;
+		display: block;
+		filter: contrast(1.04) saturate(1.02);
 	}
 
-	#container {
-		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
-		height: 100%;
+	.location-pill {
+		margin-top: -14px;
+		z-index: 2;
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 6px 13px;
+		border-radius: 999px;
+		background: rgba(8, 12, 24, 0.9);
+		border: 1px solid rgba(251, 191, 36, 0.34);
+		backdrop-filter: blur(12px);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		color: var(--text-primary);
+		white-space: nowrap;
+		box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
 	}
 
-	main {
-		height: 100%;
+	.status-pulse {
+		width: 7px;
+		height: 7px;
+		border-radius: 50%;
+		background: var(--emerald-signal);
+		box-shadow: 0 0 10px var(--emerald-signal);
+	}
+
+	.hero-copy {
+		display: grid;
+		gap: 14px;
+	}
+
+	.eyebrow-row {
 		display: flex;
-		justify-content: center;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px;
 	}
 
-	#hero {
+	.eyebrow-badge {
+		display: inline-flex;
+		align-items: center;
+		padding: 6px 12px;
+		border-radius: 999px;
+		background: rgba(245, 158, 11, 0.14);
+		border: 1px solid rgba(251, 191, 36, 0.38);
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		font-weight: 600;
+		letter-spacing: 0.18em;
+		color: var(--amber-core);
+	}
+
+	.telemetry-tag {
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.14em;
+		color: var(--text-muted);
+	}
+
+	.hero-role {
 		display: flex;
-		align-items: start;
-		flex-direction: column;
-		justify-content: center;
-		padding: 16px;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 8px;
+		font-size: 1rem;
+		color: var(--text-secondary);
 	}
 
-	h1 {
-		font-size: 22px;
-		margin-top: 0.25em;
+	.hero-role strong {
+		color: var(--text-primary);
+		font-weight: 700;
 	}
 
-	#links {
+	.role-divider {
+		color: var(--amber-gold);
+	}
+
+	.role-highlight {
+		color: var(--amber-bright);
+		font-weight: 600;
+	}
+
+	.hero-headline {
+		font-size: clamp(1.85rem, 3.3vw, 2.75rem);
+		line-height: 1.08;
+		letter-spacing: -0.03em;
+		min-height: 3.3em;
+		text-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+	}
+
+	.typing-caret {
+		display: inline-block;
+		width: 0.08em;
+		height: 0.92em;
+		margin-left: 0.1em;
+		background: var(--amber-bright);
+		vertical-align: -0.08em;
+		animation: caret-blink 0.9s steps(1) infinite;
+		box-shadow: 0 0 14px var(--amber-gold);
+	}
+
+	.interstellar-quote {
+		margin: 4px 0 0;
+		padding: 12px 16px;
+		border-left: 2px solid var(--amber-bright);
+		border-radius: 0 14px 14px 0;
+		background: linear-gradient(90deg, rgba(245, 158, 11, 0.11), rgba(8, 11, 21, 0.42));
+		backdrop-filter: blur(10px);
+	}
+
+	.interstellar-quote p {
+		font-family: var(--font-display);
+		font-style: italic;
+		font-size: 0.95rem;
+		line-height: 1.45;
+		color: var(--amber-core);
+	}
+
+	.interstellar-quote footer {
+		margin-top: 5px;
+		font-family: var(--font-mono);
+		font-size: 0.67rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--text-muted);
+	}
+
+	.hero-cta-row {
 		display: flex;
-		gap: 16px;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 12px;
+		margin-top: 4px;
 	}
 
-	#links a {
+	.primary-cta,
+	.secondary-cta {
+		display: inline-flex;
+		align-items: center;
+		gap: 9px;
+		padding: 11px 20px;
+		border-radius: 999px;
+		font-size: 0.85rem;
+		font-weight: 600;
+		text-decoration: none;
+		transition:
+			transform 200ms ease,
+			box-shadow 200ms ease,
+			border-color 200ms ease,
+			background 200ms ease;
+	}
+
+	.primary-cta {
+		background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+		color: #090b10;
+		border: 1px solid rgba(255, 244, 214, 0.5);
+		box-shadow: 0 12px 28px rgba(245, 158, 11, 0.3);
+	}
+
+	.primary-cta svg {
+		width: 16px;
+		height: 16px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2.2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.primary-cta:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 16px 34px rgba(245, 158, 11, 0.45);
+	}
+
+	.secondary-cta {
+		background: rgba(10, 14, 26, 0.72);
+		color: var(--text-primary);
+		border: 1px solid var(--border-subtle);
+		backdrop-filter: blur(14px);
+	}
+
+	.secondary-cta:hover {
+		transform: translateY(-2px);
+		border-color: var(--border-glow);
+		color: var(--amber-core);
+	}
+
+	/* Consola Terminal */
+	.terminal-card {
+		padding: 18px;
+		background: rgba(7, 10, 19, 0.8);
+	}
+
+	.terminal-head {
 		display: flex;
 		align-items: center;
-		padding: 10px 12px;
-		color: #111827;
-		text-decoration: none;
-		transition: color 0.2s;
+		justify-content: space-between;
+		padding-bottom: 12px;
+		margin-bottom: 12px;
+		border-bottom: 1px solid rgba(255, 226, 179, 0.1);
 	}
 
-	#links a:hover {
-		color: rgb(78, 80, 86);
+	.terminal-dots {
+		display: flex;
+		gap: 6px;
 	}
 
-	#links a svg {
-		height: 1em;
-		margin-left: 8px;
+	.terminal-dots span {
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
 	}
 
-	#links a.button {
-		color: white;
-		background: linear-gradient(83.21deg, #3245ff 0%, #bc52ee 100%);
-		box-shadow:
-			inset 0 0 0 1px rgba(255, 255, 255, 0.12),
-			inset 0 -2px 0 rgba(0, 0, 0, 0.24);
-		border-radius: 10px;
+	.terminal-dots span:nth-child(1) {
+		background: #fb7185;
+	}
+	.terminal-dots span:nth-child(2) {
+		background: #fbbf24;
+	}
+	.terminal-dots span:nth-child(3) {
+		background: #34d399;
 	}
 
-	#links a.button:hover {
-		color: rgb(230, 230, 230);
-		box-shadow: none;
+	.terminal-title {
+		font-family: var(--font-mono);
+		font-size: 0.64rem;
+		letter-spacing: 0.16em;
+		color: var(--text-muted);
 	}
 
-	pre {
-		font-family:
-			ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono',
-			monospace;
-		font-weight: normal;
-		background: linear-gradient(14deg, #d83333 0%, #f041ff 100%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
+	.terminal-body {
 		margin: 0;
+		white-space: pre-wrap;
+		font-family: var(--font-mono);
+		font-size: 0.74rem;
+		line-height: 1.72;
+		color: var(--text-secondary);
 	}
 
-	h2 {
-		margin: 0 0 1em;
-		font-weight: normal;
-		color: #111827;
-		font-size: 20px;
+	.cmd-prompt {
+		color: var(--amber-bright);
+		font-weight: 700;
 	}
 
-	p {
-		color: #4b5563;
-		font-size: 16px;
-		line-height: 24px;
-		letter-spacing: -0.006em;
-		margin: 0;
+	.cmd-exec {
+		color: var(--amber-core);
+		font-weight: 600;
 	}
 
-	code {
-		display: inline-block;
-		background:
-			linear-gradient(66.77deg, #f3cddd 0%, #f5cee7 100%) padding-box,
-			linear-gradient(155deg, #d83333 0%, #f041ff 18%, #f5cee7 45%) border-box;
-		border-radius: 8px;
-		border: 1px solid transparent;
-		padding: 6px 8px;
+	.cmd-key {
+		color: var(--cyan-telemetry);
 	}
 
-	.box {
-		padding: 16px;
-		background: rgba(255, 255, 255, 1);
-		border-radius: 16px;
-		border: 1px solid white;
+	.cmd-ok {
+		color: var(--emerald-signal);
+		font-weight: 600;
 	}
 
-	#news {
-		position: absolute;
-		bottom: 16px;
-		right: 16px;
-		max-width: 300px;
+	/* Franja de enlaces del perfil */
+	.profile-links-strip {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 14px;
+	}
+
+	.profile-link-chip {
+		display: flex;
+		align-items: center;
+		gap: 12px;
+		padding: 14px 16px;
+		border-radius: 18px;
 		text-decoration: none;
-		transition: background 0.2s;
-		backdrop-filter: blur(50px);
+		min-width: 0;
 	}
 
-	#news:hover {
-		background: rgba(255, 255, 255, 0.55);
+	.chip-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 38px;
+		height: 38px;
+		border-radius: 11px;
+		background: var(--amber-soft);
+		border: 1px solid rgba(251, 191, 36, 0.25);
+		color: var(--amber-bright);
+		flex-shrink: 0;
+		transition: transform 220ms ease;
 	}
 
-	@media screen and (max-height: 368px) {
-		#news {
-			display: none;
+	.chip-icon svg {
+		width: 18px;
+		height: 18px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.75;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.profile-link-chip:hover .chip-icon {
+		transform: scale(1.08);
+	}
+
+	.chip-meta {
+		display: grid;
+		gap: 2px;
+		min-width: 0;
+	}
+
+	.chip-meta span {
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		letter-spacing: 0.15em;
+		text-transform: uppercase;
+		color: var(--text-muted);
+	}
+
+	.chip-meta strong {
+		font-size: 0.82rem;
+		font-weight: 600;
+		color: var(--text-primary);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	@keyframes slow-orbit {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
 		}
 	}
 
-	@media screen and (max-width: 768px) {
-		#container {
-			display: flex;
-			flex-direction: column;
+	@keyframes caret-blink {
+		0%,
+		49% {
+			opacity: 1;
+		}
+		50%,
+		100% {
+			opacity: 0;
+		}
+	}
+
+	@media (max-width: 1120px) {
+		.hero-top-grid {
+			grid-template-columns: 1fr;
+			justify-items: start;
 		}
 
-		#hero {
-			display: block;
-			padding-top: 10%;
+		.hero-portrait-column {
+			justify-content: flex-start;
 		}
 
-		#links {
-			flex-wrap: wrap;
+		.terminal-card {
+			width: 100%;
+			max-width: 540px;
 		}
 
-		#links a.button {
-			padding: 14px 18px;
+		.profile-links-strip {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (max-width: 640px) {
+		.hero-portrait-column {
+			width: 100%;
+			justify-content: center;
 		}
 
-		#news {
-			right: 16px;
-			left: 16px;
-			bottom: 2.5rem;
-			max-width: 100%;
+		.hero-headline {
+			min-height: 0;
 		}
 
-		h1 {
-			line-height: 1.5;
+		.profile-links-strip {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

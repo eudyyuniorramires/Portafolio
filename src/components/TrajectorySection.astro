@@ -1,0 +1,854 @@
+---
+const experiences = [
+	{
+		period: '10/2026 - Actualidad',
+		role: 'Quality Assurance Specialist',
+		company: 'Banesco República Dominicana',
+		location: 'Distrito Nacional, RD · Jornada completa · Híbrida',
+		summary:
+			'Aseguramiento de calidad de software en soluciones y canales financieros digitales bajo modalidad híbrida de jornada completa.',
+		bullets: [
+			'Diseño, ejecución y seguimiento de planes de pruebas funcionales, integrales y de regresión para plataformas bancarias.',
+			'Validación de flujos transaccionales, integraciones de APIs y criterios de aceptación orientados a fiabilidad operativa.',
+			'Documentación y gestión temprana de defectos en colaboración con equipos de desarrollo y producto.'
+		],
+		tags: ['Quality Assurance', 'Testing Funcional', 'Validación de APIs', 'Jornada Completa · Híbrida']
+	},
+	{
+		period: '08/2025 - 03/2026',
+		role: 'Desarrollador Full Stack',
+		company: 'ESPARTIMP',
+		location: 'Santo Domingo Este, RD · Jornada completa · Presencial',
+		summary:
+			'Construcción y evolución de soluciones web en modalidad presencial de jornada completa, con enfoque en interfaces reactivas, integración de servicios y persistencia relacional.',
+		bullets: [
+			'Desarrollo y mantenimiento de interfaces web modernas y responsivas empleando React, JavaScript, Bootstrap, HTML5 y CSS3.',
+			'Integración y consumo de APIs REST junto con gestión de bases de datos relacionales para sistemas de negocio.',
+			'Optimización de componentes visuales y flujos de usuario para elevar la usabilidad, rendimiento y consistencia.'
+		],
+		tags: ['React', 'APIs REST', 'Bases de Datos Relacionales', 'JavaScript', 'Jornada Completa · Presencial']
+	},
+	{
+		period: '06/2023 - 09/2023',
+		role: 'Desarrollador de Software',
+		company: 'Aeropuertos Dominicanos Siglo XXI (Aerodom)',
+		location: 'Santo Domingo Este, RD · Jornada parcial',
+		summary:
+			'Desarrollo, soporte de ingeniería y continuidad operativa sobre sistemas corporativos internos en entorno aeroportuario bajo modalidad de jornada parcial.',
+		bullets: [
+			'Desarrollo y mantenimiento evolutivo de aplicaciones internas construidas con C# y SQL Server.',
+			'Resolución de incidencias técnicas, optimización de consultas SQL y ajustes funcionales en bases de datos.',
+			'Colaboración técnica para garantizar la disponibilidad y continuidad operativa de herramientas críticas.'
+		],
+		tags: ['C#', 'SQL Server', 'Desarrollo de Software', 'Jornada Parcial']
+	}
+];
+
+const hackathons = [
+	{
+		id: 'rutalimpia',
+		period: '04/2026 - 05/2026',
+		rightMeta: 'Asociado con ITLA',
+		title: 'RutaLimpia - App Móvil de Gestión de Residuos',
+		subtitle: 'Hackathon Defensa del Pueblo',
+		description:
+			'Aplicación móvil enfocada en la prevención de inundaciones urbanas mediante la gestión de residuos, notificando a los ciudadanos cuándo, cómo y dónde sacar la basura.',
+		impactAndTeam:
+			'Solución tecnológica diseñada con un fuerte enfoque en impacto social y ambiental que generó interés en alcaldías locales, desarrollada junto a Jamil.',
+		layout: 'split' as const,
+		images: [
+			{
+				src: '/hackathons/rutalimpia-pitch.png',
+				alt: 'Presentación del proyecto RutaLimpia en el Hackathon Defensa del Pueblo'
+			},
+			{
+				src: '/hackathons/rutalimpia-app.png',
+				alt: 'Mockup de la aplicación móvil RutaLimpia'
+			}
+		],
+		tags: ['App Móvil', 'Prevención de Inundaciones', 'Impacto Social', 'ITLA']
+	},
+	{
+		id: 'smart-traffic',
+		period: '12/2025',
+		rightMeta: 'Asociado con ITLA',
+		title: 'AI-Powered Smart Traffic Light',
+		subtitle: 'Samsung Innovation Campus Hackathon — Proyecto Final',
+		description:
+			'Desarrollo de un sistema de semáforos inteligentes utilizando Python y modelos de Inteligencia Artificial para optimizar y gestionar el flujo vehicular en tiempo real.',
+		impactAndTeam:
+			'Proyecto final desarrollado en colaboración con Xander Ruddy y Luis Zadkiel.',
+		layout: 'single-overlay' as const,
+		images: [
+			{
+				src: '/hackathons/smart-traffic-ai.png',
+				alt: 'Sistema AI-Powered Smart Traffic Light con visión por computadora en tiempo real'
+			}
+		],
+		tags: ['Python', 'Inteligencia Artificial', 'Tiempo Real', 'ITLA']
+	}
+];
+
+const educationList = [
+	{
+		type: 'UNIVERSIDAD',
+		period: '2026 - 04/2028',
+		title: 'Ing. en Ciencias de la Computación',
+		institution: 'PUCMM',
+		detail: 'Pontificia Universidad Católica Madre y Maestra · Ingeniería enfocada en ciencias de la computación, algoritmos y sistemas complejos.'
+	},
+	{
+		type: 'EDUCACIÓN SUPERIOR',
+		period: '2024 - 04/2026',
+		title: 'Desarrollo de Software',
+		institution: 'ITLA',
+		detail: 'Instituto Tecnológico de las Américas · Formación tecnológica especializada en ingeniería de software, arquitectura web y bases de datos.'
+	},
+	{
+		type: 'EDUCACIÓN SECUNDARIA',
+		period: '2017 - 06/2023',
+		title: 'Bachiller Académico',
+		institution: 'CESM',
+		detail: 'Centro Educativo Santa María (Villa Faro) · Formación académica base con excelencia disciplinaria.'
+	}
+];
+
+const certifications = [
+	{
+		badge: 'IDIOMAS',
+		title: 'Inglés B2',
+		org: 'Inglés por Inmersión · MESCYT',
+		description: 'Dominio intermedio-avanzado para lectura de documentación técnica, colaboración y comunicación profesional.'
+	},
+	{
+		badge: 'INFRAESTRUCTURA TI',
+		title: 'CISCO IT Essentials',
+		org: 'Cisco Networking Academy',
+		description: 'Fundamentos sólidos en arquitectura de computadores, sistemas operativos, redes y seguridad operativa.'
+	},
+	{
+		badge: 'IA & DATOS',
+		title: 'Samsung Innovation Campus (IA & Python)',
+		org: 'Samsung',
+		description: 'Programa intensivo en programación con Python, análisis de datos y fundamentos de Inteligencia Artificial.'
+	},
+	{
+		badge: 'METODOLOGÍAS ÁGILES',
+		title: 'Fundamentos de Scrum',
+		org: 'soylider.net · 02/2026',
+		description: 'Gestión ágil de proyectos, roles, artefactos e iteraciones en equipos de desarrollo de software.'
+	},
+	{
+		badge: 'DATA SCIENCE',
+		title: 'Ciencia De Datos - Nivel Intermedio',
+		org: 'INDOTEL · 01/2026',
+		description: 'Emitido por el Instituto Dominicano de las Telecomunicaciones · Procesamiento, análisis e interpretación intermedia de datos.'
+	},
+	{
+		badge: 'CIBERSEGURIDAD',
+		title: 'Fundamentos de Ciberseguridad',
+		org: 'MACROSeguridad-MASEG · 12/2025',
+		description: 'Formación especializada de 290 horas en servicios auxiliares de ciberseguridad y protección de sistemas.'
+	},
+	{
+		badge: 'DESARROLLO .NET & POO',
+		title: 'Introducción a la Programación',
+		org: 'ITLA · 10/2023',
+		description: 'Certificación en fundamentos de C#, .NET Framework y Programación Orientada a Objetos (POO).'
+	},
+	{
+		badge: 'IDIOMAS',
+		title: 'Inglés Intensivo 1',
+		org: 'ITLA · 07/2023',
+		description: 'Curso de Inglés Intensivo 1 completado como refuerzo para consolidar y perfeccionar conocimientos previos.'
+	}
+];
+---
+
+<section class="section-block" id="trayectoria" data-reveal-section>
+	<div class="section-header">
+		<p class="section-kicker">BITÁCORA DE VUELO</p>
+		<h2 class="section-heading">Experiencia profesional y formación académica</h2>
+		<p class="section-subtitle">
+			Evolución continua combinando experiencia real en entornos productivos, innovación en
+			hackathones y formación universitaria en Ciencias de la Computación.
+		</p>
+	</div>
+
+	<div class="trajectory-columns">
+		<!-- Columna Izquierda: Únicamente Experiencia Profesional -->
+		<div class="experience-column">
+			<div class="sub-heading">
+				<span class="sub-dot" aria-hidden="true"></span>
+				<h3>Experiencia Profesional</h3>
+			</div>
+
+			<div class="timeline-list">
+				{
+					experiences.map((exp) => (
+						<article class="timeline-card space-card" data-reveal-card>
+							<div class="timeline-meta">
+								<span class="period-pill">{exp.period}</span>
+								<span class="location-label">{exp.location}</span>
+							</div>
+
+							<div class="timeline-header">
+								<h4>{exp.role}</h4>
+								<p class="company-name">{exp.company}</p>
+							</div>
+
+							<p class="timeline-summary">{exp.summary}</p>
+
+							<ul class="timeline-bullets">
+								{exp.bullets.map((item) => (
+									<li>{item}</li>
+								))}
+							</ul>
+
+							<div class="timeline-tags">
+								{exp.tags.map((tag) => (
+									<span>{tag}</span>
+								))}
+							</div>
+						</article>
+					))
+				}
+			</div>
+		</div>
+
+		<!-- Columna Derecha: Educación y Cursos / Certificaciones -->
+		<div class="education-column">
+			<div class="sub-heading">
+				<span class="sub-dot sub-dot-cyan" aria-hidden="true"></span>
+				<h3>Educación y Cursos</h3>
+			</div>
+
+			<div class="edu-stack">
+				{
+					educationList.map((edu) => (
+						<article class="edu-card space-card" data-reveal-card>
+							<div class="edu-top">
+								<span class="edu-type">{edu.type}</span>
+								<span class="edu-period">{edu.period}</span>
+							</div>
+							<div class="edu-title-row">
+								<h4>{edu.title}</h4>
+								<span class="edu-badge">{edu.institution}</span>
+							</div>
+							<p>{edu.detail}</p>
+						</article>
+					))
+				}
+			</div>
+
+			<div class="cert-grid">
+				{
+					certifications.map((cert) => (
+						<article class="cert-card space-card" data-reveal-card>
+							<div class="cert-top">
+								<span class="cert-kicker">{cert.badge}</span>
+								<span class="cert-org">{cert.org}</span>
+							</div>
+							<h4>{cert.title}</h4>
+							<p>{cert.description}</p>
+						</article>
+					))
+				}
+			</div>
+		</div>
+	</div>
+
+	<!-- Sección Inferior Simétrica de Ancho Total: Hackathones e Innovación (Grid 2 Columnas) -->
+	<div class="hackathons-showcase">
+		<div class="hackathons-divider">
+			<span class="divider-line divider-line-left" aria-hidden="true"></span>
+			<div class="sub-heading hackathons-heading">
+				<span class="sub-dot" aria-hidden="true"></span>
+				<h3>Hackathones e Innovación</h3>
+			</div>
+			<span class="divider-line divider-line-right" aria-hidden="true"></span>
+		</div>
+
+		<div class="hackathons-grid">
+			{
+				hackathons.map((item) => (
+					<article class="hackathon-card space-card" data-reveal-card>
+						<!-- Columna Izquierda: Miniatura Compacta estilo LinkedIn (220x135) -->
+						<div class="hackathon-media-box">
+							{item.layout === 'split' ? (
+								<div class="hackathon-split-grid">
+									{item.images.map((img) => (
+										<img
+											src={img.src}
+											alt={img.alt}
+											loading="lazy"
+											data-lightbox-src={img.src}
+											data-lightbox-alt={img.alt}
+										/>
+									))}
+								</div>
+							) : (
+								<div
+									class="hackathon-single-wrap"
+									data-lightbox-src={item.images[0].src}
+									data-lightbox-alt={item.images[0].alt}
+								>
+									<img
+										src={item.images[0].src}
+										alt={item.images[0].alt}
+										loading="lazy"
+									/>
+									<span class="linkedin-external-badge" aria-hidden="true">
+										<svg viewBox="0 0 24 24">
+											<path d="M14 4h6v6" />
+											<path d="M10 14 20 4" />
+											<path d="M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5" />
+										</svg>
+									</span>
+								</div>
+							)}
+						</div>
+
+						<!-- Columna Derecha: Contenido y Etiquetas -->
+						<div class="hackathon-content">
+							<div class="timeline-meta">
+								<span class="period-pill">{item.period}</span>
+								<span class="location-label">{item.rightMeta}</span>
+							</div>
+
+							<div class="timeline-header">
+								<h4>{item.title}</h4>
+								<p class="company-name">{item.subtitle}</p>
+							</div>
+
+							<p class="timeline-summary">{item.description}</p>
+							<p class="hackathon-impact">{item.impactAndTeam}</p>
+
+							<div class="timeline-tags">
+								{item.tags.map((tag) => (
+									<span>{tag}</span>
+								))}
+							</div>
+						</div>
+					</article>
+				))
+			}
+		</div>
+	</div>
+
+	<!-- Visor modal limpio al hacer clic en cualquier miniatura -->
+	<dialog class="hackathon-lightbox" id="hackathon-lightbox" aria-label="Vista ampliada de imagen">
+		<div class="lightbox-frame">
+			<button
+				type="button"
+				class="lightbox-close"
+				id="lightbox-close"
+				aria-label="Cerrar vista ampliada"
+			>
+				✕
+			</button>
+			<img id="lightbox-img" src="" alt="" />
+		</div>
+	</dialog>
+</section>
+
+<script>
+	const setupHackathonLightbox = () => {
+		const dialog = document.getElementById('hackathon-lightbox') as HTMLDialogElement | null;
+		const dialogImg = document.getElementById('lightbox-img') as HTMLImageElement | null;
+		const closeBtn = document.getElementById('lightbox-close');
+		const triggers = document.querySelectorAll<HTMLElement>('[data-lightbox-src]');
+
+		if (!dialog || !dialogImg || dialog.dataset.bound === 'true') return;
+		dialog.dataset.bound = 'true';
+
+		triggers.forEach((el) => {
+			el.addEventListener('click', () => {
+				const src = el.dataset.lightboxSrc ?? '';
+				const alt = el.dataset.lightboxAlt ?? '';
+				dialogImg.src = src;
+				dialogImg.alt = alt;
+				dialog.showModal();
+			});
+		});
+
+		closeBtn?.addEventListener('click', () => dialog.close());
+		dialog.addEventListener('click', (event) => {
+			if (event.target === dialog) dialog.close();
+		});
+	};
+
+	setupHackathonLightbox();
+	document.addEventListener('astro:after-swap', setupHackathonLightbox);
+</script>
+
+<style>
+	.section-block {
+		padding: 46px 0;
+	}
+
+	.section-header {
+		margin-bottom: 30px;
+	}
+
+	/* Columnas superiores simétricas y equilibradas en altura */
+	.trajectory-columns {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 24px;
+		align-items: stretch;
+	}
+
+	.experience-column,
+	.education-column {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.sub-heading {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-bottom: 16px;
+	}
+
+	.sub-heading h3 {
+		font-size: 1.15rem;
+		letter-spacing: -0.01em;
+		color: var(--text-primary);
+	}
+
+	.sub-dot {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: var(--amber-bright);
+		box-shadow: 0 0 12px var(--amber-gold);
+		flex-shrink: 0;
+	}
+
+	.sub-dot-cyan {
+		background: var(--cyan-telemetry);
+		box-shadow: 0 0 12px var(--cyan-telemetry);
+	}
+
+	.timeline-list {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 18px;
+		flex: 1;
+		padding-left: 18px;
+		border-left: 1px solid rgba(251, 191, 36, 0.25);
+	}
+
+	.timeline-card {
+		padding: 25px 24px;
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		flex: 1;
+	}
+
+	.timeline-card::before {
+		content: '';
+		position: absolute;
+		left: -24px;
+		top: 28px;
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: var(--amber-core);
+		border: 2px solid var(--amber-gold);
+		box-shadow: 0 0 12px var(--amber-bright);
+	}
+
+	.timeline-card .timeline-tags {
+		margin-top: auto;
+	}
+
+	/* Educación y Cursos (compactados sutilmente para igualar la altura de Experiencia) */
+	.edu-stack {
+		display: grid;
+		gap: 11px;
+		margin-bottom: 11px;
+	}
+
+	.edu-card {
+		padding: 15px 20px;
+		display: grid;
+		gap: 6px;
+	}
+
+	.edu-top,
+	.cert-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+	}
+
+	.edu-type,
+	.cert-kicker {
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		font-weight: 600;
+		letter-spacing: 0.15em;
+		color: var(--cyan-telemetry);
+	}
+
+	.edu-period,
+	.cert-org {
+		font-family: var(--font-mono);
+		font-size: 0.69rem;
+		color: var(--text-muted);
+	}
+
+	.edu-title-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+	}
+
+	.edu-title-row h4,
+	.cert-card h4 {
+		font-size: 1.02rem;
+	}
+
+	.edu-badge {
+		padding: 3px 10px;
+		border-radius: 999px;
+		background: rgba(56, 189, 248, 0.13);
+		border: 1px solid rgba(56, 189, 248, 0.32);
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		font-weight: 700;
+		color: #bae6fd;
+		flex-shrink: 0;
+	}
+
+	.edu-card p,
+	.cert-card p {
+		font-size: 0.82rem;
+		line-height: 1.48;
+		color: var(--text-secondary);
+	}
+
+	.cert-grid {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 10px;
+		flex: 1;
+	}
+
+	.cert-card {
+		padding: 13px 20px;
+		display: grid;
+		gap: 5px;
+	}
+
+	.cert-kicker {
+		color: var(--amber-bright);
+	}
+
+	/* Sección Inferior de Ancho Completo: Hackathones e Innovación */
+	.hackathons-showcase {
+		margin-top: 40px;
+	}
+
+	.hackathons-divider {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 18px;
+		margin-bottom: 24px;
+	}
+
+	.hackathons-heading {
+		margin-bottom: 0;
+		flex-shrink: 0;
+	}
+
+	.divider-line {
+		height: 1px;
+		flex: 1;
+	}
+
+	.divider-line-left {
+		background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.35));
+	}
+
+	.divider-line-right {
+		background: linear-gradient(270deg, transparent, rgba(251, 191, 36, 0.35));
+	}
+
+	.hackathons-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 20px;
+		align-items: stretch;
+	}
+
+	/* Tarjeta horizontal estilo Proyectos de LinkedIn */
+	.hackathon-card {
+		padding: 22px;
+		display: flex;
+		flex-direction: row;
+		gap: 1.25rem;
+		align-items: flex-start;
+	}
+
+	/* Bloque izquierdo fijo 220x135 sin fondos ni recuadros grises */
+	.hackathon-media-box {
+		width: 220px;
+		height: 135px;
+		flex-shrink: 0;
+		border-radius: 8px;
+		overflow: hidden;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		background: #060912;
+		position: relative;
+	}
+
+	.hackathon-split-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 3px;
+		width: 100%;
+		height: 100%;
+		background: #060912;
+	}
+
+	.hackathon-split-grid img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+		cursor: pointer;
+		transition: transform 240ms ease;
+	}
+
+	.hackathon-split-grid img:hover {
+		transform: scale(1.04);
+	}
+
+	.hackathon-single-wrap {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		cursor: pointer;
+	}
+
+	.hackathon-single-wrap img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+		transition: transform 240ms ease;
+	}
+
+	.hackathon-single-wrap:hover img {
+		transform: scale(1.04);
+	}
+
+	/* Botón circular oscuro semitransparente centrado estilo LinkedIn */
+	.linkedin-external-badge {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		width: 38px;
+		height: 38px;
+		border-radius: 50%;
+		background: rgba(12, 16, 26, 0.78);
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		backdrop-filter: blur(4px);
+		-webkit-backdrop-filter: blur(4px);
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		color: #f8fafc;
+		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
+		transition:
+			background-color 200ms ease,
+			transform 200ms ease,
+			border-color 200ms ease;
+	}
+
+	.hackathon-single-wrap:hover .linkedin-external-badge {
+		background: rgba(15, 20, 34, 0.92);
+		border-color: rgba(251, 191, 36, 0.55);
+		transform: translate(-50%, -50%) scale(1.06);
+	}
+
+	.linkedin-external-badge svg {
+		width: 17px;
+		height: 17px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	/* Columna derecha de contenido de Hackathon */
+	.hackathon-content {
+		flex: 1;
+		min-width: 0;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.hackathon-content .timeline-tags {
+		margin-top: auto;
+	}
+
+	.timeline-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+	}
+
+	.period-pill {
+		padding: 5px 11px;
+		border-radius: 999px;
+		background: rgba(245, 158, 11, 0.14);
+		border: 1px solid rgba(251, 191, 36, 0.34);
+		font-family: var(--font-mono);
+		font-size: 0.71rem;
+		font-weight: 600;
+		color: var(--amber-core);
+	}
+
+	.location-label {
+		font-family: var(--font-mono);
+		font-size: 0.7rem;
+		color: var(--text-muted);
+	}
+
+	.timeline-header h4 {
+		font-size: 1.18rem;
+		line-height: 1.22;
+		margin-bottom: 4px;
+	}
+
+	.company-name {
+		font-size: 0.9rem;
+		font-weight: 600;
+		color: var(--amber-bright);
+	}
+
+	.timeline-summary {
+		font-size: 0.86rem;
+		line-height: 1.56;
+		color: var(--text-secondary);
+	}
+
+	.hackathon-impact {
+		font-size: 0.82rem;
+		line-height: 1.52;
+		color: var(--text-muted);
+	}
+
+	.timeline-bullets {
+		margin: 0;
+		padding-left: 18px;
+		display: grid;
+		gap: 7px;
+		font-size: 0.83rem;
+		line-height: 1.55;
+		color: var(--text-muted);
+	}
+
+	.timeline-bullets li::marker {
+		color: var(--amber-bright);
+	}
+
+	.timeline-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+		padding-top: 4px;
+	}
+
+	.timeline-tags span {
+		padding: 4px 10px;
+		border-radius: 999px;
+		font-family: var(--font-mono);
+		font-size: 0.69rem;
+		background: rgba(15, 23, 42, 0.7);
+		border: 1px solid rgba(148, 163, 184, 0.2);
+		color: var(--text-secondary);
+	}
+
+	/* Lightbox Modal */
+	.hackathon-lightbox {
+		padding: 0;
+		border: 1px solid var(--border-glow);
+		border-radius: 20px;
+		background: rgba(6, 9, 18, 0.94);
+		color: var(--text-primary);
+		max-width: min(92vw, 940px);
+		box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85);
+	}
+
+	.hackathon-lightbox::backdrop {
+		background: rgba(2, 4, 10, 0.82);
+		backdrop-filter: blur(10px);
+	}
+
+	.lightbox-frame {
+		position: relative;
+		padding: 16px;
+	}
+
+	.lightbox-frame img {
+		max-width: 100%;
+		max-height: 80vh;
+		width: auto;
+		height: auto;
+		margin: 0 auto;
+		border-radius: 12px;
+		display: block;
+	}
+
+	.lightbox-close {
+		position: absolute;
+		top: 24px;
+		right: 24px;
+		width: 34px;
+		height: 34px;
+		border-radius: 50%;
+		border: 1px solid rgba(251, 191, 36, 0.4);
+		background: rgba(8, 12, 24, 0.86);
+		color: var(--amber-core);
+		font-size: 0.9rem;
+		cursor: pointer;
+	}
+
+	@media (max-width: 1080px) {
+		.trajectory-columns,
+		.hackathons-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.hackathon-card {
+			flex-direction: column;
+		}
+
+		.hackathon-media-box {
+			width: 100%;
+			max-width: 280px;
+			height: 155px;
+		}
+	}
+</style>

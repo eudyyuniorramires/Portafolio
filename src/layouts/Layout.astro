@@ -1,7 +1,14 @@
 ---
+import InterstellarCanvas from '../components/InterstellarCanvas.astro';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
 const {
-	title = 'Eudy Yunior Lorenzo Ramirez | Desarrollador de Software',
-	description = 'Portafolio de Eudy Yunior Lorenzo Ramirez, desarrollador de software enfocado en experiencias web modernas.'
+	title = 'Eudy Yunior Lorenzo Ramirez | Desarrollador Full Stack',
+	description = 'Portafolio interactivo 3D de Eudy Yunior Lorenzo Ramirez — Desarrollador Full Stack en Santo Domingo Este especializado en .NET, React, SQL Server y arquitecturas modernas.'
 } = Astro.props;
 ---
 
@@ -14,44 +21,229 @@ const {
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="description" content={description} />
-		<meta name="theme-color" content="#08111f" />
+		<meta name="theme-color" content="#04050a" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:type" content="website" />
+		<meta property="og:image" content="/foto-eudy.png" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+			rel="stylesheet"
+		/>
+
 		<title>{title}</title>
 	</head>
 	<body>
+		<div class="cosmic-backdrop" aria-hidden="true"></div>
+		<InterstellarCanvas />
+		<div class="cosmic-vignette" aria-hidden="true"></div>
 		<slot />
 	</body>
 </html>
 
-<style>
+<style is:global>
 	:root {
-		font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+		--font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+		--font-sans: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+		--font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+		--bg-void: #03040a;
+		--bg-deep: #070a14;
+		--glass-surface: rgba(8, 11, 21, 0.66);
+		--glass-surface-strong: rgba(10, 14, 26, 0.82);
+		--glass-surface-hover: rgba(14, 19, 35, 0.86);
+
+		--border-subtle: rgba(255, 226, 179, 0.13);
+		--border-glow: rgba(245, 158, 11, 0.48);
+		--border-cool: rgba(148, 163, 184, 0.16);
+
+		--text-primary: #f8fafc;
+		--text-secondary: #cbd5e1;
+		--text-muted: #94a3b8;
+
+		--amber-core: #fff4d6;
+		--amber-bright: #fbbf24;
+		--amber-gold: #f59e0b;
+		--amber-deep: #d97706;
+		--amber-soft: rgba(245, 158, 11, 0.14);
+		--amber-halo: rgba(251, 191, 36, 0.24);
+
+		--cyan-telemetry: #38bdf8;
+		--cyan-soft: rgba(56, 189, 248, 0.13);
+		--emerald-signal: #34d399;
+
+		--shadow-space:
+			0 22px 55px rgba(0, 0, 0, 0.62),
+			inset 0 1px 0 rgba(255, 244, 214, 0.08);
+		--shadow-amber:
+			0 24px 60px rgba(0, 0, 0, 0.72),
+			0 0 32px rgba(245, 158, 11, 0.14),
+			inset 0 1px 0 rgba(255, 244, 214, 0.16);
+	}
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
 	}
 
 	html {
 		scroll-behavior: smooth;
+		background-color: var(--bg-void);
+		color-scheme: dark;
 	}
 
 	html,
 	body {
 		margin: 0;
+		padding: 0;
 		min-width: 320px;
 		min-height: 100%;
-		background: #ffffff;
-		color: #111111;
+		font-family: var(--font-sans);
+		color: var(--text-primary);
+		background: transparent;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
 	}
 
 	body {
 		overflow-x: hidden;
+		position: relative;
 	}
 
-	* {
-		box-sizing: border-box;
+	::selection {
+		background: rgba(245, 158, 11, 0.32);
+		color: var(--amber-core);
+	}
+
+	/* Scrollbar espacial oscuro */
+	::-webkit-scrollbar {
+		width: 9px;
+	}
+	::-webkit-scrollbar-track {
+		background: #04060d;
+	}
+	::-webkit-scrollbar-thumb {
+		background: rgba(245, 158, 11, 0.28);
+		border-radius: 999px;
+		border: 2px solid #04060d;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background: rgba(251, 191, 36, 0.52);
+	}
+
+	/* Respaldo cósmico detrás del canvas WebGL */
+	.cosmic-backdrop {
+		position: fixed;
+		inset: 0;
+		z-index: -2;
+		pointer-events: none;
+		background:
+			radial-gradient(circle at 68% 38%, rgba(245, 158, 11, 0.14) 0%, rgba(180, 83, 9, 0.05) 28%, transparent 60%),
+			radial-gradient(circle at 20% 80%, rgba(30, 58, 138, 0.14) 0%, transparent 52%),
+			linear-gradient(180deg, #020308 0%, #050813 50%, #020307 100%);
+	}
+
+	/* Viñeta cinematográfica sutil para realzar legibilidad sobre Gargantua */
+	.cosmic-vignette {
+		position: fixed;
+		inset: 0;
+		z-index: -1;
+		pointer-events: none;
+		background:
+			radial-gradient(ellipse at center, transparent 42%, rgba(2, 3, 8, 0.68) 100%),
+			linear-gradient(90deg, rgba(3, 4, 10, 0.56) 0%, rgba(3, 4, 10, 0.16) 52%, rgba(3, 4, 10, 0.38) 100%);
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		font-family: var(--font-display);
+		margin: 0;
+		color: var(--text-primary);
+	}
+
+	p {
+		margin: 0;
 	}
 
 	a {
 		color: inherit;
 	}
- </style>
+
+	/* Superficie base Glassmorphism Espacial */
+	.space-card {
+		position: relative;
+		background: var(--glass-surface);
+		backdrop-filter: blur(18px) saturate(140%);
+		-webkit-backdrop-filter: blur(18px) saturate(140%);
+		border: 1px solid var(--border-subtle);
+		border-radius: 22px;
+		box-shadow: var(--shadow-space);
+		transition:
+			transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+			border-color 280ms ease,
+			background-color 280ms ease,
+			box-shadow 280ms ease;
+	}
+
+	.space-card:hover {
+		transform: translateY(-5px);
+		background: var(--glass-surface-hover);
+		border-color: var(--border-glow);
+		box-shadow: var(--shadow-amber);
+	}
+
+	.section-kicker {
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		font-family: var(--font-mono);
+		font-size: 0.73rem;
+		font-weight: 600;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--amber-bright);
+		margin-bottom: 12px;
+	}
+
+	.section-kicker::before {
+		content: '';
+		display: inline-block;
+		width: 22px;
+		height: 1px;
+		background: linear-gradient(90deg, transparent, var(--amber-bright));
+	}
+
+	.section-heading {
+		font-size: clamp(1.95rem, 3.6vw, 2.95rem);
+		line-height: 1.06;
+		letter-spacing: -0.03em;
+		max-width: 680px;
+	}
+
+	.section-subtitle {
+		margin-top: 12px;
+		font-size: 1rem;
+		line-height: 1.65;
+		color: var(--text-secondary);
+		max-width: 620px;
+	}
+
+	/* Modo Observatorio: atenúa las secciones para admirar Gargantua y la Endurance */
+	body.observatory-mode .portfolio-main {
+		opacity: 0.06;
+		pointer-events: none;
+		filter: blur(2px);
+	}
+
+	.portfolio-main {
+		transition:
+			opacity 420ms ease,
+			filter 420ms ease;
+	}
+</style>

@@ -1,0 +1,990 @@
+---
+// InterstellarCanvas.astro
+// Escena 3D interactiva inspirada en Interstellar:
+// - Agujero negro Gargantua con horizonte de sucesos, anillo de fotones, lensing gravitacional y disco de acreción ámbar/dorado (GLSL)
+// - Campo estelar profundo con paralaje y centelleo
+// - Nave anular Endurance (12 módulos + núcleo de acoplamiento) rotando a contraluz
+// - Cámara cinematográfica vinculada al scroll mediante GSAP ScrollTrigger
+---
+
+<canvas id="interstellar-canvas" aria-hidden="true"></canvas>
+
+<script>
+	import * as THREE from 'three';
+	import gsap from 'gsap';
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	const initInterstellarScene = () => {
+		const canvas = document.getElementById('interstellar-canvas') as HTMLCanvasElement | null;
+		if (!canvas || canvas.dataset.initialized === 'true') return;
+		canvas.dataset.initialized = 'true';
+
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		// ==========================================
+		// 1. ESCENA, CÁMARA Y RENDERER
+		// ==========================================
+		const scene = new THREE.Scene();
+		scene.fog = new THREE.FogExp2(0x030409, 0.0065);
+
+		const camera = new THREE.PerspectiveCamera(
+			46,
+			window.innerWidth / window.innerHeight,
+			0.1,
+			260
+		);
+		camera.position.set(-0.6, 0.45, 9.2);
+
+		let renderer: THREE.WebGLRenderer;
+		try {
+			renderer = new THREE.WebGLRenderer({
+				canvas,
+				antialias: true,
+				alpha: true,
+				powerPreference: 'high-performance'
+			});
+		} catch {
+			return;
+		}
+
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+		renderer.toneMapping = THREE.ACESFilmicToneMapping;
+		renderer.toneMappingExposure = 1.12;
+
+		// Estado de objetivo de mirada (lookAt interpolado)
+		const cameraTarget = new THREE.Vector3(1.9, 0.15, -7.5);
+		const currentLookAt = cameraTarget.clone();
+
+		// ==========================================
+		// 2. CAMPO DE ESTRELLAS PROFUNDO (GLSL)
+		// ==========================================
+		const starCount = 3600;
+		const starPositions = new Float32Array(starCount * 3);
+		const starColors = new Float32Array(starCount * 3);
+		const starSizes = new Float32Array(starCount);
+		const starPhases = new Float32Array(starCount);
+
+		const palette = [
+			new THREE.Color('#fff8eb'), // Blanco cálido
+			new THREE.Color('#ffdca8'), // Ámbar estelar
+			new THREE.Color('#cfe4ff'), // Azul hielo
+			new THREE.Color('#ffffff'), // Blanco puro
+			new THREE.Color('#ffb86b')  // Gigante dorada
+		];
+
+		for (let i = 0; i < starCount; i++) {
+			const r = 34 + Math.pow(Math.random(), 0.65) * 125;
+			const theta = Math.random() * Math.PI * 2;
+			const phi = Math.acos(2 * Math.random() - 1);
+
+			starPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+			starPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+			starPositions[i * 3 + 2] = r * Math.cos(phi) - 18;
+
+			const col = palette[Math.floor(Math.random() * palette.length)];
+			const brightness = 0.45 + Math.random() * 0.55;
+			starColors[i * 3] = col.r * brightness;
+			starColors[i * 3 + 1] = col.g * brightness;
+			starColors[i * 3 + 2] = col.b * brightness;
+
+			starSizes[i] = Math.random() < 0.08 ? 2.4 + Math.random() * 2.2 : 0.7 + Math.random() * 1.4;
+			starPhases[i] = Math.random() * Math.PI * 2;
+		}
+
+		const starGeometry = new THREE.BufferGeometry();
+		starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+		starGeometry.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+		starGeometry.setAttribute('aSize', new THREE.BufferAttribute(starSizes, 1));
+		starGeometry.setAttribute('aPhase', new THREE.BufferAttribute(starPhases, 1));
+
+		const starMaterial = new THREE.ShaderMaterial({
+			transparent: true,
+			depthWrite: false,
+			blending: THREE.AdditiveBlending,
+			uniforms: {
+				uTime: { value: 0 },
+				uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) }
+			},
+			vertexShader: /* glsl */ `
+				attribute float aSize;
+				attribute float aPhase;
+				attribute vec3 color;
+				varying vec3 vColor;
+				varying float vTwinkle;
+				uniform float uTime;
+				uniform float uPixelRatio;
+
+				void main() {
+					vColor = color;
+					vTwinkle = 0.72 + 0.28 * sin(uTime * 1.4 + aPhase);
+					vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+					gl_PointSize = aSize * uPixelRatio * (110.0 / max(-mvPosition.z, 10.0));
+					gl_Position = projectionMatrix * mvPosition;
+				}
+			`,
+			fragmentShader: /* glsl */ `
+				varying vec3 vColor;
+				varying float vTwinkle;
+
+				void main() {
+					float d = length(gl_PointCoord - vec2(0.5));
+					if (d > 0.5) discard;
+					float core = smoothstep(0.5, 0.04, d);
+					float glow = pow(max(0.0, 1.0 - d * 2.0), 2.6);
+					gl_FragColor = vec4(vColor * (core * 0.65 + glow * 0.85), glow * vTwinkle);
+				}
+			`
+		});
+
+		const starfield = new THREE.Points(starGeometry, starMaterial);
+		scene.add(starfield);
+
+		// ==========================================
+		// 3. AGUJERO NEGRO GARGANTUA
+		// ==========================================
+		const gargantuaGroup = new THREE.Group();
+		gargantuaGroup.position.set(3.2, 0.35, -9.5);
+		scene.add(gargantuaGroup);
+
+		// 3A. Sombra del Horizonte de Sucesos (oclusor puro en el buffer de profundidad)
+		const eventHorizonRadius = 2.35;
+		const blackHoleGeo = new THREE.SphereGeometry(eventHorizonRadius, 64, 64);
+		const blackHoleMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+		const blackHoleCore = new THREE.Mesh(blackHoleGeo, blackHoleMat);
+		gargantuaGroup.add(blackHoleCore);
+
+		// 3B. Halo de Lente Gravitacional + Anillo de Fotones (siempre orientado a la cámara)
+		const lensingGeo = new THREE.PlaneGeometry(21, 21);
+		const lensingMat = new THREE.ShaderMaterial({
+			transparent: true,
+			depthWrite: false,
+			blending: THREE.AdditiveBlending,
+			uniforms: {
+				uTime: { value: 0 },
+				uDiskTilt: { value: -0.22 }
+			},
+			vertexShader: /* glsl */ `
+				varying vec2 vUv;
+				void main() {
+					vUv = uv;
+					gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+				}
+			`,
+			fragmentShader: /* glsl */ `
+				varying vec2 vUv;
+				uniform float uTime;
+				uniform float uDiskTilt;
+
+				float hash(vec2 p) {
+					return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+				}
+
+				float noise(vec2 p) {
+					vec2 i = floor(p);
+					vec2 f = fract(p);
+					f = f * f * (3.0 - 2.0 * f);
+					return mix(
+						mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+						mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+						f.y
+					);
+				}
+
+				float fbm(vec2 p) {
+					float v = 0.0;
+					float a = 0.5;
+					for (int i = 0; i < 4; i++) {
+						v += a * noise(p);
+						p *= 2.05;
+						a *= 0.5;
+					}
+					return v;
+				}
+
+				void main() {
+					// Coordenadas en unidades de escena (-10.5 a +10.5)
+					vec2 p = (vUv - 0.5) * 21.0;
+
+					// Rotar ligeramente para alinear los arcos de lente con la inclinación del disco
+					float c = cos(uDiskTilt);
+					float s = sin(uDiskTilt);
+					vec2 pr = vec2(p.x * c - p.y * s, p.x * s + p.y * c);
+
+					float r = length(pr);
+
+					// Interior de la sombra del agujero negro: oscuridad absoluta
+					if (r < 2.31) discard;
+
+					float ang = atan(pr.y, pr.x);
+					vec2 ringCoord = vec2(cos(ang + uTime * 0.32), sin(ang + uTime * 0.32)) * 3.0 + vec2(r * 2.2, uTime * 0.12);
+					float plasma = fbm(ringCoord);
+
+					// 1) Anillo de fotones relativista ultra fino pegado al horizonte de sucesos
+					float photonRing = exp(-pow((r - 2.41) / 0.11, 2.0)) * 1.45;
+
+					// 2) Arcos superior e inferior curvados por gravedad (imagen doblada de la cara posterior del disco)
+					float polarWeight = pow(abs(pr.y / max(r, 0.001)), 0.72);
+					float lensedArc = exp(-pow((r - 2.68) / (0.58 + 0.25 * plasma), 2.0)) * polarWeight * (0.78 + 0.45 * plasma);
+
+					// Estriaciones finas en los arcos de lente
+					float arcLanes = 0.78 + 0.22 * sin((r - 2.35) * 24.0 - uTime * 1.8 + plasma * 4.0);
+					lensedArc *= arcLanes;
+
+					// 3) Asimetría Doppler relativista (lado izquierdo más incandescente, derecho más ámbar cálido)
+					float doppler = clamp(1.0 - pr.x * 0.11, 0.68, 1.36);
+
+					// 4) Corona atmosférica dorada y sutil destello anamórfico horizontal
+					float corona = exp(-(r - 2.35) * 0.52) * 0.28;
+					float anamorphic = exp(-abs(pr.y) * 3.2) * exp(-abs(pr.x) * 0.24) * smoothstep(2.32, 2.8, r) * 0.26;
+
+					float intensity = (photonRing + lensedArc + corona + anamorphic) * doppler;
+
+					// Gradiente cromático Gargantua: blanco incandescente -> oro puro -> ámbar profundo -> cobre oscuro
+					vec3 hotWhite = vec3(1.0, 0.96, 0.86);
+					vec3 brightGold = vec3(1.0, 0.72, 0.28);
+					vec3 deepAmber = vec3(0.88, 0.38, 0.07);
+
+					vec3 col = mix(deepAmber, brightGold, clamp(intensity * 0.85, 0.0, 1.0));
+					col = mix(col, hotWhite, clamp((photonRing * 0.85 + lensedArc * 0.42) * doppler, 0.0, 1.0));
+
+					// Desvanecimiento suave hacia los bordes del plano para evitar cortes
+					float edgeFade = smoothstep(10.2, 6.2, r);
+					float innerMask = smoothstep(2.31, 2.38, r);
+
+					float alpha = clamp(intensity * edgeFade * innerMask, 0.0, 1.0);
+					gl_FragColor = vec4(col * intensity * edgeFade * innerMask, alpha);
+				}
+			`
+		});
+
+		const lensingHalo = new THREE.Mesh(lensingGeo, lensingMat);
+		gargantuaGroup.add(lensingHalo);
+
+		// 3C. Disco de Acreción Ecuatorial 3D (Kepleriano + Turbulencia FBM + Doppler)
+		const diskInner = 2.52;
+		const diskOuter = 9.9;
+		const diskGeo = new THREE.RingGeometry(diskInner, diskOuter, 200, 72);
+
+		const diskMat = new THREE.ShaderMaterial({
+			side: THREE.DoubleSide,
+			transparent: true,
+			depthWrite: false,
+			blending: THREE.AdditiveBlending,
+			uniforms: {
+				uTime: { value: 0 },
+				uInner: { value: diskInner },
+				uOuter: { value: diskOuter }
+			},
+			vertexShader: /* glsl */ `
+				varying vec2 vLocalPos;
+				varying vec3 vWorldPos;
+				varying vec3 vWorldAxisX;
+				varying vec3 vWorldAxisY;
+
+				void main() {
+					vLocalPos = position.xy;
+					vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+					vWorldPos = worldPosition.xyz;
+					vWorldAxisX = normalize((modelMatrix * vec4(1.0, 0.0, 0.0, 0.0)).xyz);
+					vWorldAxisY = normalize((modelMatrix * vec4(0.0, 1.0, 0.0, 0.0)).xyz);
+					gl_Position = projectionMatrix * viewMatrix * worldPosition;
+				}
+			`,
+			fragmentShader: /* glsl */ `
+				varying vec2 vLocalPos;
+				varying vec3 vWorldPos;
+				varying vec3 vWorldAxisX;
+				varying vec3 vWorldAxisY;
+				uniform float uTime;
+				uniform float uInner;
+				uniform float uOuter;
+
+				float hash(vec2 p) {
+					return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
+				}
+
+				float noise(vec2 p) {
+					vec2 i = floor(p);
+					vec2 f = fract(p);
+					f = f * f * (3.0 - 2.0 * f);
+					return mix(
+						mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x),
+						mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x),
+						f.y
+					);
+				}
+
+				float fbm(vec2 p) {
+					float v = 0.0;
+					float a = 0.5;
+					for (int i = 0; i < 5; i++) {
+						v += a * noise(p);
+						p *= 2.03;
+						a *= 0.5;
+					}
+					return v;
+				}
+
+				void main() {
+					float r = length(vLocalPos);
+					float normR = clamp((r - uInner) / (uOuter - uInner), 0.0, 1.0);
+					float angle = atan(vLocalPos.y, vLocalPos.x);
+
+					// Rotación diferencial kepleriana sin costura (2*PI periódica mediante cos/sin)
+					float keplerSpeed = 1.45 / pow(max(r * 0.34, 0.38), 1.18);
+					float spiral = angle + uTime * keplerSpeed * 0.55 - r * 0.92;
+
+					vec2 uv1 = vec2(cos(spiral), sin(spiral)) * (2.0 + r * 0.48) + vec2(r * 1.5, uTime * 0.07);
+					vec2 uv2 = vec2(cos(spiral * 2.0), sin(spiral * 2.0)) * (3.1 + r * 0.35) - vec2(uTime * 0.11, r * 1.1);
+
+					float n1 = fbm(uv1);
+					float n2 = fbm(uv2);
+					float filaments = mix(n1, n2, 0.45);
+
+					// Surcos orbitales concéntricos de plasma caliente
+					float rings = 0.68 + 0.32 * sin(r * 19.0 - uTime * 1.9 + filaments * 5.2);
+					float fineRings = 0.84 + 0.16 * sin(r * 46.0 + filaments * 6.5);
+
+					// Perfil radial: borde interno incandescente y caída exponencial exterior
+					float innerFade = smoothstep(0.0, 0.055, normR);
+					float outerFade = pow(1.0 - normR, 1.85);
+					float radialDensity = innerFade * outerFade * (0.48 + 0.92 * filaments) * rings * fineRings;
+
+					// Efecto Doppler relativista según velocidad tangencial respecto al observador
+					vec3 worldTangent = normalize(-sin(angle) * vWorldAxisX + cos(angle) * vWorldAxisY);
+					vec3 viewDir = normalize(cameraPosition - vWorldPos);
+					float dopplerSignal = dot(worldTangent, viewDir);
+					float dopplerBoost = clamp(1.0 + dopplerSignal * 0.36, 0.62, 1.44);
+
+					// Paleta ámbar/dorado cinematográfica inspirada en Gargantua
+					vec3 coreWhiteGold = vec3(1.0, 0.96, 0.84);
+					vec3 solarAmber = vec3(1.0, 0.69, 0.22);
+					vec3 burntGold = vec3(0.91, 0.41, 0.08);
+					vec3 outerRust = vec3(0.45, 0.14, 0.03);
+
+					vec3 diskColor = mix(solarAmber, burntGold, smoothstep(0.14, 0.62, normR));
+					diskColor = mix(diskColor, outerRust, smoothstep(0.58, 0.98, normR));
+					diskColor = mix(coreWhiteGold, diskColor, smoothstep(0.0, 0.24, normR));
+
+					// Desplazamiento térmico por Doppler
+					diskColor = mix(diskColor, coreWhiteGold, clamp(dopplerSignal * 0.26, 0.0, 0.35));
+
+					float finalBrightness = radialDensity * dopplerBoost * 1.55;
+					float alpha = clamp(finalBrightness * 0.92, 0.0, 1.0);
+
+					gl_FragColor = vec4(diskColor * finalBrightness, alpha);
+				}
+			`
+		});
+
+		const diskPlaneGroup = new THREE.Group();
+		// Plano orbital ecuatorial inclinado tipo Interstellar (orden ZYX para inclinar el horizonte tras ponerlo de canto)
+		diskPlaneGroup.rotation.order = 'ZYX';
+		diskPlaneGroup.rotation.z = -0.22;
+		diskPlaneGroup.rotation.x = Math.PI * 0.455;
+		gargantuaGroup.add(diskPlaneGroup);
+
+		const accretionDisk = new THREE.Mesh(diskGeo, diskMat);
+		diskPlaneGroup.add(accretionDisk);
+
+		// 3D. Cinturón Volumétrico de Partículas Incandescentes en Órbita
+		const emberCount = 1200;
+		const emberPositions = new Float32Array(emberCount * 3);
+		const emberSizes = new Float32Array(emberCount);
+
+		for (let i = 0; i < emberCount; i++) {
+			const radius = 2.75 + Math.pow(Math.random(), 1.5) * 7.2;
+			const theta = Math.random() * Math.PI * 2;
+			const verticalSpread = (Math.random() - 0.5) * 0.22 * (radius / 5.0);
+
+			emberPositions[i * 3] = Math.cos(theta) * radius;
+			emberPositions[i * 3 + 1] = Math.sin(theta) * radius;
+			emberPositions[i * 3 + 2] = verticalSpread;
+			emberSizes[i] = 0.8 + Math.random() * 2.1;
+		}
+
+		const emberGeo = new THREE.BufferGeometry();
+		emberGeo.setAttribute('position', new THREE.BufferAttribute(emberPositions, 3));
+		emberGeo.setAttribute('aSize', new THREE.BufferAttribute(emberSizes, 1));
+
+		const emberMat = new THREE.ShaderMaterial({
+			transparent: true,
+			depthWrite: false,
+			blending: THREE.AdditiveBlending,
+			uniforms: {
+				uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) }
+			},
+			vertexShader: /* glsl */ `
+				attribute float aSize;
+				uniform float uPixelRatio;
+				varying float vAlpha;
+
+				void main() {
+					float r = length(position.xy);
+					vAlpha = smoothstep(10.0, 3.2, r) * 0.72;
+					vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+					gl_PointSize = aSize * uPixelRatio * (48.0 / max(-mvPosition.z, 4.0));
+					gl_Position = projectionMatrix * mvPosition;
+				}
+			`,
+			fragmentShader: /* glsl */ `
+				varying float vAlpha;
+				void main() {
+					float d = length(gl_PointCoord - vec2(0.5));
+					if (d > 0.5) discard;
+					float glow = pow(1.0 - d * 2.0, 2.2);
+					vec3 emberCol = mix(vec3(0.95, 0.48, 0.12), vec3(1.0, 0.86, 0.55), glow);
+					gl_FragColor = vec4(emberCol, glow * vAlpha);
+				}
+			`
+		});
+
+		const diskEmbers = new THREE.Points(emberGeo, emberMat);
+		diskPlaneGroup.add(diskEmbers);
+
+		// ==========================================
+		// 4. ILUMINACIÓN ESPACIAL A CONTRALUZ
+		// ==========================================
+		// Luz ambiental tenue del vacío espacial para definir sutilmente el chasis
+		const ambientLight = new THREE.AmbientLight(0x162038, 0.55);
+		scene.add(ambientLight);
+
+		// Luz principal cálida proveniente directamente de Gargantua (crea el contraluz dorado sobre la Endurance)
+		const gargantuaPointLight = new THREE.PointLight(0xffae42, 65, 90, 1.35);
+		gargantuaPointLight.position.copy(gargantuaGroup.position);
+		scene.add(gargantuaPointLight);
+
+		const rimDirectionalLight = new THREE.DirectionalLight(0xffcf75, 3.8);
+		rimDirectionalLight.position.set(5.5, 1.4, -9.0);
+		scene.add(rimDirectionalLight);
+
+		// Contraluz secundario frío azulado de reflejo estelar
+		const starFillLight = new THREE.DirectionalLight(0x60a5fa, 0.65);
+		starFillLight.position.set(-8.0, -3.5, 6.0);
+		scene.add(starFillLight);
+
+		// ==========================================
+		// 5. NAVE ANULAR ENDURANCE (3D PROCEDURAL)
+		// ==========================================
+		const enduranceAnchor = new THREE.Group();
+		enduranceAnchor.position.set(-2.35, -0.45, 2.4);
+		enduranceAnchor.rotation.set(0.36, 0.52, -0.18);
+		scene.add(enduranceAnchor);
+
+		// Subgrupo rotatorio (los 12 módulos giran generando gravedad artificial ~5.5 RPM)
+		const enduranceRing = new THREE.Group();
+		enduranceAnchor.add(enduranceRing);
+
+		const hullDarkMat = new THREE.MeshStandardMaterial({
+			color: 0x0b0f17,
+			metalness: 0.9,
+			roughness: 0.24
+		});
+
+		const hullAlloyMat = new THREE.MeshStandardMaterial({
+			color: 0x1e2636,
+			metalness: 0.92,
+			roughness: 0.18
+		});
+
+		const solarPanelMat = new THREE.MeshStandardMaterial({
+			color: 0x070b14,
+			metalness: 0.96,
+			roughness: 0.12
+		});
+
+		const cabinBeaconMat = new THREE.MeshBasicMaterial({
+			color: 0xffd27d
+		});
+
+		const navCyanMat = new THREE.MeshBasicMaterial({
+			color: 0x38bdf8
+		});
+
+		const moduleCount = 12;
+		const ringRadius = 1.38;
+
+		const podGeo = new THREE.BoxGeometry(0.3, 0.19, 0.22);
+		const podCapGeo = new THREE.BoxGeometry(0.22, 0.21, 0.14);
+		const innerSolarGeo = new THREE.BoxGeometry(0.24, 0.02, 0.16);
+		const windowGeo = new THREE.BoxGeometry(0.055, 0.018, 0.015);
+		const tunnelGeo = new THREE.CylinderGeometry(0.046, 0.046, 0.46, 14);
+		const collarGeo = new THREE.CylinderGeometry(0.068, 0.068, 0.05, 14);
+
+		for (let i = 0; i < moduleCount; i++) {
+			const theta = (i / moduleCount) * Math.PI * 2;
+			const podCluster = new THREE.Group();
+
+			podCluster.position.set(
+				Math.cos(theta) * ringRadius,
+				Math.sin(theta) * ringRadius,
+				0
+			);
+			// Orientar tangencialmente al anillo
+			podCluster.rotation.z = theta + Math.PI / 2;
+
+			// Módulo habitable principal
+			const podMesh = new THREE.Mesh(podGeo, i % 2 === 0 ? hullAlloyMat : hullDarkMat);
+			podCluster.add(podMesh);
+
+			// Escudo térmico / bisel estructural
+			const capMesh = new THREE.Mesh(podCapGeo, hullDarkMat);
+			capMesh.position.y = 0.02;
+			podCluster.add(capMesh);
+
+			// Panel radiador interior mirando hacia el centro del anillo
+			const solarMesh = new THREE.Mesh(innerSolarGeo, solarPanelMat);
+			solarMesh.position.y = -0.105;
+			podCluster.add(solarMesh);
+
+			// Luces diminutas de cabina / telemetría
+			if (i % 3 === 0) {
+				const win = new THREE.Mesh(windowGeo, cabinBeaconMat);
+				win.position.set(0.06, -0.095, 0.08);
+				podCluster.add(win);
+			}
+			if (i % 4 === 0) {
+				const beacon = new THREE.Mesh(windowGeo, navCyanMat);
+				beacon.scale.set(0.5, 0.8, 0.8);
+				beacon.position.set(-0.08, 0.102, 0.0);
+				podCluster.add(beacon);
+			}
+
+			enduranceRing.add(podCluster);
+
+			// Túnel presurizado conectando con el siguiente módulo del polígono de 12 lados
+			const midAngle = theta + Math.PI / moduleCount;
+			const chordRadius = ringRadius * Math.cos(Math.PI / moduleCount);
+
+			const tunnelGroup = new THREE.Group();
+			tunnelGroup.position.set(
+				Math.cos(midAngle) * chordRadius,
+				Math.sin(midAngle) * chordRadius,
+				0
+			);
+			tunnelGroup.rotation.z = midAngle;
+
+			const tunnelMesh = new THREE.Mesh(tunnelGeo, hullAlloyMat);
+			tunnelGroup.add(tunnelMesh);
+
+			const collarA = new THREE.Mesh(collarGeo, hullDarkMat);
+			collarA.position.y = 0.15;
+			tunnelGroup.add(collarA);
+
+			const collarB = new THREE.Mesh(collarGeo, hullDarkMat);
+			collarB.position.y = -0.15;
+			tunnelGroup.add(collarB);
+
+			enduranceRing.add(tunnelGroup);
+		}
+
+		// Eje central de acoplamiento (Central Docking Hub) y brazos radiales principales
+		const hubCore = new THREE.Mesh(
+			new THREE.CylinderGeometry(0.22, 0.22, 0.2, 24),
+			hullAlloyMat
+		);
+		hubCore.rotation.x = Math.PI / 2;
+		enduranceRing.add(hubCore);
+
+		const hubDockRing = new THREE.Mesh(
+			new THREE.TorusGeometry(0.17, 0.024, 12, 28),
+			hullDarkMat
+		);
+		hubDockRing.position.z = 0.11;
+		enduranceRing.add(hubDockRing);
+
+		const hubDockRingBack = hubDockRing.clone();
+		hubDockRingBack.position.z = -0.11;
+		enduranceRing.add(hubDockRingBack);
+
+		// Dos túneles radiales principales opuestos + dos tensores estructurales perpendiculares
+		const mainSpokeGeo = new THREE.CylinderGeometry(0.056, 0.056, ringRadius * 1.88, 16);
+		const mainSpoke = new THREE.Mesh(mainSpokeGeo, hullAlloyMat);
+		enduranceRing.add(mainSpoke);
+
+		const crossStrutGeo = new THREE.CylinderGeometry(0.022, 0.022, ringRadius * 1.88, 10);
+		const crossStrut = new THREE.Mesh(crossStrutGeo, hullDarkMat);
+		crossStrut.rotation.z = Math.PI / 2;
+		enduranceRing.add(crossStrut);
+
+		// Silueta de nave Ranger acoplada cerca del hub central
+		const rangerHull = new THREE.Mesh(
+			new THREE.ConeGeometry(0.09, 0.28, 4),
+			hullDarkMat
+		);
+		rangerHull.scale.set(1.15, 1.0, 0.42);
+		rangerHull.position.set(0.0, 0.36, 0.14);
+		rangerHull.rotation.z = Math.PI;
+		enduranceRing.add(rangerHull);
+
+		// ==========================================
+		// 6. COREOGRAFÍA DE CÁMARA Y NAVE CON GSAP SCROLLTRIGGER
+		// ==========================================
+		const scrollState = {
+			spinBoost: 0,
+			scrollAngle: 0
+		};
+
+		const scrollTl = gsap.timeline({
+			scrollTrigger: {
+				trigger: document.documentElement,
+				start: 'top top',
+				end: 'bottom bottom',
+				scrub: 1.5,
+				onUpdate: (self) => {
+					const velocity = Math.min(Math.abs(self.getVelocity()) / 2800, 1.6);
+					scrollState.spinBoost = velocity;
+				}
+			}
+		});
+
+		// Tramo 1: Inicio -> Stack (Aproximación orbital a la Endurance a contraluz)
+		scrollTl
+			.to(
+				camera.position,
+				{
+					x: -1.15,
+					y: 0.85,
+					z: 7.3,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				0
+			)
+			.to(
+				camera.rotation,
+				{
+					z: -0.11,
+					ease: 'sine.inOut',
+					duration: 1
+				},
+				0
+			)
+			.to(
+				cameraTarget,
+				{
+					x: 1.4,
+					y: 0.1,
+					z: -7.8,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				0
+			)
+			.to(
+				enduranceAnchor.position,
+				{
+					x: -0.75,
+					y: 0.18,
+					z: 2.9,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				0
+			)
+			.to(
+				enduranceAnchor.rotation,
+				{
+					x: 0.58,
+					y: 0.18,
+					z: 0.12,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				0
+			)
+
+			// Tramo 2: Stack -> Proyectos (Rasante ecuatorial frente al anillo de fotones de Gargantua)
+			.to(
+				camera.position,
+				{
+					x: 1.45,
+					y: -0.68,
+					z: 6.1,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				1
+			)
+			.to(
+				camera.rotation,
+				{
+					z: 0.09,
+					ease: 'sine.inOut',
+					duration: 1
+				},
+				1
+			)
+			.to(
+				cameraTarget,
+				{
+					x: 2.6,
+					y: 0.22,
+					z: -8.6,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				1
+			)
+			.to(
+				enduranceAnchor.position,
+				{
+					x: 1.85,
+					y: -0.32,
+					z: 1.65,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				1
+			)
+			.to(
+				enduranceAnchor.rotation,
+				{
+					x: 0.24,
+					y: -0.46,
+					z: -0.25,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				1
+			)
+
+			// Tramo 3: Proyectos -> Trayectoria (Ascenso orbital panorámico sobre el disco dorado)
+			.to(
+				camera.position,
+				{
+					x: -0.85,
+					y: 2.15,
+					z: 7.4,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				2
+			)
+			.to(
+				camera.rotation,
+				{
+					z: -0.07,
+					ease: 'sine.inOut',
+					duration: 1
+				},
+				2
+			)
+			.to(
+				cameraTarget,
+				{
+					x: 2.35,
+					y: -0.15,
+					z: -9.0,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				2
+			)
+			.to(
+				enduranceAnchor.position,
+				{
+					x: 0.45,
+					y: 0.92,
+					z: 2.1,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				2
+			)
+			.to(
+				enduranceAnchor.rotation,
+				{
+					x: 0.72,
+					y: -0.15,
+					z: 0.28,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				2
+			)
+
+			// Tramo 4: Trayectoria -> Contacto (Horizonte profundo hacia nuevos mundos)
+			.to(
+				camera.position,
+				{
+					x: 0.35,
+					y: 0.32,
+					z: 8.6,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				3
+			)
+			.to(
+				camera.rotation,
+				{
+					z: 0.0,
+					ease: 'sine.inOut',
+					duration: 1
+				},
+				3
+			)
+			.to(
+				cameraTarget,
+				{
+					x: 2.8,
+					y: 0.25,
+					z: -9.2,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				3
+			)
+			.to(
+				enduranceAnchor.position,
+				{
+					x: 1.55,
+					y: 0.22,
+					z: -0.8,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				3
+			)
+			.to(
+				enduranceAnchor.rotation,
+				{
+					x: 0.32,
+					y: -0.35,
+					z: 0.05,
+					ease: 'power1.inOut',
+					duration: 1
+				},
+				3
+			);
+
+		// Rotación adicional vinculada directamente al progreso del scroll
+		const ringScrollTween = gsap.to(scrollState, {
+			scrollAngle: Math.PI * 3.2,
+			ease: 'none',
+			scrollTrigger: {
+				trigger: document.documentElement,
+				start: 'top top',
+				end: 'bottom bottom',
+				scrub: 1.6
+			}
+		});
+
+		// ==========================================
+		// 7. PARALAJE SUTIL DE PUNTERO Y LOOP DE RENDER
+		// ==========================================
+		const pointer = { x: 0, y: 0, targetX: 0, targetY: 0 };
+
+		const onPointerMove = (e: PointerEvent) => {
+			if (prefersReducedMotion) return;
+			pointer.targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+			pointer.targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+		};
+		window.addEventListener('pointermove', onPointerMove, { passive: true });
+
+		const adjustForViewport = () => {
+			const width = window.innerWidth;
+			const height = window.innerHeight;
+			camera.aspect = width / height;
+			camera.fov = width < 768 ? 56 : 46;
+			camera.updateProjectionMatrix();
+
+			const scaleFactor = width < 768 ? 0.76 : 1.0;
+			gargantuaGroup.scale.setScalar(scaleFactor);
+			enduranceAnchor.scale.setScalar(width < 768 ? 0.78 : 1.0);
+
+			renderer.setSize(width, height);
+			const pr = Math.min(window.devicePixelRatio, 2);
+			renderer.setPixelRatio(pr);
+			starMaterial.uniforms.uPixelRatio.value = pr;
+			emberMat.uniforms.uPixelRatio.value = pr;
+			ScrollTrigger.refresh();
+		};
+
+		adjustForViewport();
+		window.addEventListener('resize', adjustForViewport, { passive: true });
+
+		const clock = new THREE.Clock();
+		let idleSpin = 0;
+		let rafId = 0;
+
+		const tick = () => {
+			rafId = window.requestAnimationFrame(tick);
+
+			const delta = Math.min(clock.getDelta(), 0.05);
+			const elapsed = clock.elapsedTime;
+			const motionFactor = prefersReducedMotion ? 0.15 : 1.0;
+
+			// Actualizar shaders relativistas y estelares
+			const activeTime = elapsed * motionFactor;
+			starMaterial.uniforms.uTime.value = activeTime;
+			diskMat.uniforms.uTime.value = activeTime;
+			lensingMat.uniforms.uTime.value = activeTime;
+
+			// Rotación continua de la nave Endurance (~5.5 RPM) + ángulo directo de scroll + inercia
+			idleSpin += delta * (0.34 + scrollState.spinBoost * 0.55) * motionFactor;
+			scrollState.spinBoost *= 0.92;
+			enduranceRing.rotation.z = idleSpin + scrollState.scrollAngle;
+
+			// Partículas del disco de acreción orbitando
+			diskEmbers.rotation.z -= delta * 0.16 * motionFactor;
+
+			// Deriva sutil del campo estelar
+			starfield.rotation.y = activeTime * 0.008;
+
+			// Suavizado de paralaje del ratón
+			pointer.x += (pointer.targetX - pointer.x) * 0.045;
+			pointer.y += (pointer.targetY - pointer.y) * 0.045;
+
+			// Actualizar orientación de cámara preservando el roll (camera.rotation.z) controlado por GSAP
+			const savedRoll = camera.rotation.z;
+			currentLookAt.lerp(cameraTarget, 0.08);
+			camera.lookAt(
+				currentLookAt.x + pointer.x * 0.45,
+				currentLookAt.y - pointer.y * 0.32,
+				currentLookAt.z
+			);
+			camera.rotation.z = savedRoll - pointer.x * 0.025;
+
+			// Orientar el halo de lente gravitacional hacia la posición de la cámara manteniendo el eje mundial
+			lensingHalo.lookAt(camera.position);
+
+			renderer.render(scene, camera);
+		};
+
+		tick();
+
+		// Limpieza segura ante recargas o transiciones
+		document.addEventListener(
+			'astro:before-swap',
+			() => {
+				window.cancelAnimationFrame(rafId);
+				window.removeEventListener('pointermove', onPointerMove);
+				window.removeEventListener('resize', adjustForViewport);
+				scrollTl.kill();
+				ringScrollTween.kill();
+				renderer.dispose();
+			},
+			{ once: true }
+		);
+	};
+
+	initInterstellarScene();
+	document.addEventListener('astro:after-swap', initInterstellarScene);
+</script>
+
+<style>
+	#interstellar-canvas {
+		position: fixed;
+		inset: 0;
+		width: 100vw;
+		height: 100vh;
+		z-index: -1;
+		pointer-events: none;
+		display: block;
+	}
+</style>

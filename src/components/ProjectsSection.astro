@@ -1,0 +1,294 @@
+---
+const projects = [
+	{
+		id: 'PRJ // 01',
+		category: 'Full Stack · Seguridad JWT',
+		title: 'Sistema de Encuestas Web',
+		stackSummary: '.NET + React + SQL Server con JWT',
+		description:
+			'Aplicación full stack desarrollada con .NET y React para crear, administrar y visualizar encuestas dinámicas, integrando autenticación segura con JWT, gestión avanzada de formularios y almacenamiento relacional de resultados en SQL Server.',
+		highlights: [
+			'Autenticación y control de acceso stateless mediante JSON Web Tokens (JWT).',
+			'Constructor y gestión de formularios reactivos con visualización de métricas.',
+			'Persistencia transaccional e integridad referencial en SQL Server.'
+		],
+		tags: ['.NET', 'React', 'SQL Server', 'JWT', 'API REST'],
+		icon: 'survey'
+	},
+	{
+		id: 'PRJ // 02',
+		category: 'Arquitectura Web · Modelos de Scoring',
+		title: 'Simulador de Ranking de Países',
+		stackSummary: 'ASP.NET MVC + EF Core',
+		description:
+			'Aplicación web desarrollada con ASP.NET MVC y Entity Framework Core para evaluar países mediante indicadores macroeconómicos y generar rankings de inversión automatizados aplicando modelos matemáticos de normalización y scoring.',
+		highlights: [
+			'Algoritmos de normalización estadística y ponderación multicriterio de indicadores.',
+			'Acceso a datos estructurado y migraciones mediante Entity Framework Core.',
+			'Separación limpia de responsabilidades bajo arquitectura ASP.NET MVC.'
+		],
+		tags: ['ASP.NET MVC', 'C#', 'EF Core', 'SQL Server', 'Scoring'],
+		icon: 'globe'
+	},
+	{
+		id: 'PRJ // 03',
+		category: 'Ingeniería de Datos · Arquitectura Empresarial',
+		title: 'Análisis de Opiniones — Sistema ETL',
+		stackSummary: '.NET 8 + Data Warehouse + API REST',
+		description:
+			'Sistema ETL empresarial construido en .NET 8 para recolectar datos y opiniones desde múltiples fuentes heterogéneas, transformarlos y centralizarlos en un Data Warehouse dimensional, exponiendo resultados listos para análisis mediante API REST.',
+		highlights: [
+			'Pipeline de Extracción, Transformación y Carga (ETL) de alto rendimiento en .NET 8.',
+			'Modelado centralizado en Data Warehouse dimensional para consultas analíticas.',
+			'Exposición desacoplada de indicadores e insights a través de API REST.'
+		],
+		tags: ['.NET 8', 'Data Warehouse', 'API REST', 'ETL', 'SQL'],
+		icon: 'pipeline'
+	}
+];
+---
+
+<section class="section-block" id="proyectos" data-reveal-section>
+	<div class="section-header-row">
+		<div>
+			<p class="section-kicker">MISIONES EJECUTADAS</p>
+			<h2 class="section-heading">Proyectos destacados de ingeniería</h2>
+			<p class="section-subtitle">
+				Soluciones diseñadas con arquitectura limpia, seguridad robusta y manejo estructurado de
+				datos reales.
+			</p>
+		</div>
+
+		<a
+			class="github-orbit-link space-card"
+			href="https://github.com/eudyyuniorramires"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			<span>Ver repositorios en GitHub</span>
+			<svg viewBox="0 0 24 24" aria-hidden="true">
+				<path d="M7 17 17 7M9 7h8v8"></path>
+			</svg>
+		</a>
+	</div>
+
+	<div class="projects-grid">
+		{
+			projects.map((project) => (
+				<article class="project-card space-card" data-reveal-card>
+					<div class="project-top">
+						<div class="project-icon" aria-hidden="true">
+							{project.icon === 'survey' && (
+								<svg viewBox="0 0 24 24">
+									<rect x="4" y="3" width="16" height="18" rx="2.5" />
+									<path d="m8.5 9.5 1.8 1.8 4.2-3.8M8.5 15h7" />
+								</svg>
+							)}
+							{project.icon === 'globe' && (
+								<svg viewBox="0 0 24 24">
+									<circle cx="12" cy="12" r="9" />
+									<path d="M3.6 9h16.8M3.6 15h16.8" />
+									<path d="M12 3a14.5 14.5 0 0 1 0 18 14.5 14.5 0 0 1 0-18Z" />
+								</svg>
+							)}
+							{project.icon === 'pipeline' && (
+								<svg viewBox="0 0 24 24">
+									<circle cx="5.5" cy="6.5" r="2.5" />
+									<circle cx="5.5" cy="17.5" r="2.5" />
+									<circle cx="18.5" cy="12" r="2.5" />
+									<path d="M8 6.5h4a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H8M14 12h2" />
+								</svg>
+							)}
+						</div>
+						<div class="project-badges">
+							<span class="project-code">{project.id}</span>
+							<span class="project-category">{project.category}</span>
+						</div>
+					</div>
+
+					<div class="project-body">
+						<p class="project-stack-line">{project.stackSummary}</p>
+						<h3>{project.title}</h3>
+						<p class="project-description">{project.description}</p>
+					</div>
+
+					<ul class="project-highlights">
+						{project.highlights.map((point) => (
+							<li>{point}</li>
+						))}
+					</ul>
+
+					<div class="project-tags">
+						{project.tags.map((tag) => (
+							<span>{tag}</span>
+						))}
+					</div>
+				</article>
+			))
+		}
+	</div>
+</section>
+
+<style>
+	.section-block {
+		padding: 46px 0;
+	}
+
+	.section-header-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: flex-end;
+		justify-content: space-between;
+		gap: 20px;
+		margin-bottom: 28px;
+	}
+
+	.github-orbit-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		padding: 12px 18px;
+		border-radius: 999px;
+		font-size: 0.83rem;
+		font-weight: 600;
+		text-decoration: none;
+		color: var(--amber-core);
+	}
+
+	.github-orbit-link svg {
+		width: 16px;
+		height: 16px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.projects-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 20px;
+	}
+
+	.project-card {
+		padding: 26px;
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+	}
+
+	.project-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+	}
+
+	.project-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 48px;
+		height: 48px;
+		border-radius: 14px;
+		background: var(--amber-soft);
+		border: 1px solid rgba(251, 191, 36, 0.32);
+		color: var(--amber-bright);
+		flex-shrink: 0;
+	}
+
+	.project-icon svg {
+		width: 23px;
+		height: 23px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.75;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.project-badges {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 3px;
+		text-align: right;
+	}
+
+	.project-code {
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		font-weight: 600;
+		letter-spacing: 0.16em;
+		color: var(--amber-bright);
+	}
+
+	.project-category {
+		font-size: 0.72rem;
+		color: var(--text-muted);
+	}
+
+	.project-body {
+		display: grid;
+		gap: 8px;
+	}
+
+	.project-stack-line {
+		font-family: var(--font-mono);
+		font-size: 0.74rem;
+		color: var(--cyan-telemetry);
+		letter-spacing: 0.04em;
+	}
+
+	.project-body h3 {
+		font-size: 1.35rem;
+		line-height: 1.18;
+	}
+
+	.project-description {
+		font-size: 0.9rem;
+		line-height: 1.62;
+		color: var(--text-secondary);
+	}
+
+	.project-highlights {
+		margin: 0;
+		padding-left: 18px;
+		display: grid;
+		gap: 7px;
+		color: var(--text-muted);
+		font-size: 0.82rem;
+		line-height: 1.5;
+	}
+
+	.project-highlights li::marker {
+		color: var(--amber-gold);
+	}
+
+	.project-tags {
+		margin-top: auto;
+		padding-top: 12px;
+		border-top: 1px solid rgba(255, 226, 179, 0.1);
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+
+	.project-tags span {
+		padding: 5px 11px;
+		border-radius: 999px;
+		font-family: var(--font-mono);
+		font-size: 0.71rem;
+		font-weight: 500;
+		background: rgba(245, 158, 11, 0.12);
+		border: 1px solid rgba(251, 191, 36, 0.24);
+		color: var(--amber-core);
+	}
+
+	@media (max-width: 1080px) {
+		.projects-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

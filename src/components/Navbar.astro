@@ -1,0 +1,357 @@
+---
+const navItems = [
+	{ label: 'Inicio', href: '#inicio' },
+	{ label: 'Stack', href: '#stack' },
+	{ label: 'Proyectos', href: '#proyectos' },
+	{ label: 'Trayectoria', href: '#trayectoria' },
+	{ label: 'Contacto', href: '#contacto' }
+];
+---
+
+<header class="topbar" id="main-navbar">
+	<div class="scroll-progress-bar" id="scroll-progress-bar" aria-hidden="true"></div>
+
+	<a class="brand" href="#inicio" aria-label="Ir al inicio">
+		<span class="brand-orbit" aria-hidden="true">
+			<span class="brand-dot"></span>
+		</span>
+		<div class="brand-copy">
+			<strong>EUDY YUNIOR</strong>
+			<span>FULL STACK DEVELOPER</span>
+		</div>
+	</a>
+
+	<nav class="nav-links" aria-label="Navegación principal">
+		{
+			navItems.map((item, idx) => (
+				<a
+					href={item.href}
+					data-nav-link={item.href.slice(1)}
+					class={idx === 0 ? 'is-active' : ''}
+				>
+					{item.label}
+				</a>
+			))
+		}
+	</nav>
+
+	<div class="topbar-actions">
+		<button
+			type="button"
+			class="observatory-btn"
+			id="observatory-toggle"
+			aria-pressed="false"
+			title="Alternar vista despejada de Gargantua y la nave Endurance"
+		>
+			<svg viewBox="0 0 24 24" aria-hidden="true">
+				<circle cx="12" cy="12" r="3.2"></circle>
+				<ellipse cx="12" cy="12" rx="10" ry="4.2" transform="rotate(-18 12 12)"></ellipse>
+			</svg>
+			<span>3D</span>
+		</button>
+
+		<a
+			class="cv-button"
+			href="/eudy-yunior-lorenzo-ramirez-cv.pdf"
+			download="Eudy-Yunior-Lorenzo-Ramirez-CV.pdf"
+		>
+			<svg viewBox="0 0 24 24" aria-hidden="true">
+				<path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14"></path>
+			</svg>
+			<span>Descargar CV</span>
+		</a>
+	</div>
+</header>
+
+<script>
+	const setupNavbar = () => {
+		const toggleBtn = document.getElementById('observatory-toggle');
+		const progressBar = document.getElementById('scroll-progress-bar');
+		const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]'));
+
+		toggleBtn?.addEventListener('click', () => {
+			const active = document.body.classList.toggle('observatory-mode');
+			toggleBtn.setAttribute('aria-pressed', active ? 'true' : 'false');
+			toggleBtn.classList.toggle('is-active', active);
+		});
+
+		const updateScrollProgress = () => {
+			if (!progressBar) return;
+			const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+			const ratio = maxScroll > 0 ? Math.min(Math.max(window.scrollY / maxScroll, 0), 1) : 0;
+			progressBar.style.transform = `scaleX(${ratio})`;
+		};
+
+		window.addEventListener('scroll', updateScrollProgress, { passive: true });
+		updateScrollProgress();
+
+		const sections = navLinks
+			.map((link) => {
+				const id = link.dataset.navLink;
+				return id ? document.getElementById(id) : null;
+			})
+			.filter((el): el is HTMLElement => Boolean(el));
+
+		if ('IntersectionObserver' in window && sections.length > 0) {
+			const observer = new IntersectionObserver(
+				(entries) => {
+					entries.forEach((entry) => {
+						if (entry.isIntersecting) {
+							const activeId = entry.target.id;
+							navLinks.forEach((link) => {
+								link.classList.toggle('is-active', link.dataset.navLink === activeId);
+							});
+						}
+					});
+				},
+				{
+					rootMargin: '-28% 0px -55% 0px',
+					threshold: 0.05
+				}
+			);
+
+			sections.forEach((section) => observer.observe(section));
+		}
+	};
+
+	setupNavbar();
+	document.addEventListener('astro:after-swap', setupNavbar);
+</script>
+
+<style>
+	.topbar {
+		position: sticky;
+		top: 20px;
+		z-index: 50;
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 20px;
+		max-width: 1200px;
+		margin: 0 auto 38px;
+		padding: 12px 18px 12px 20px;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 224, 172, 0.16);
+		background: rgba(6, 9, 18, 0.72);
+		backdrop-filter: blur(22px) saturate(160%);
+		-webkit-backdrop-filter: blur(22px) saturate(160%);
+		box-shadow:
+			0 20px 50px rgba(0, 0, 0, 0.65),
+			inset 0 1px 0 rgba(255, 244, 214, 0.1);
+		overflow: hidden;
+	}
+
+	.scroll-progress-bar {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		height: 2px;
+		background: linear-gradient(90deg, transparent, var(--amber-gold), var(--amber-core));
+		transform: scaleX(0);
+		transform-origin: left center;
+		pointer-events: none;
+		opacity: 0.9;
+	}
+
+	.brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		text-decoration: none;
+	}
+
+	.brand-orbit {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		border: 1px solid rgba(251, 191, 36, 0.42);
+		background: radial-gradient(circle, rgba(245, 158, 11, 0.22) 0%, transparent 72%);
+	}
+
+	.brand-dot {
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: var(--amber-core);
+		box-shadow:
+			0 0 10px var(--amber-bright),
+			0 0 20px var(--amber-gold);
+	}
+
+	.brand-copy {
+		display: grid;
+		gap: 3px;
+	}
+
+	.brand-copy strong {
+		font-family: var(--font-display);
+		font-size: 0.84rem;
+		font-weight: 700;
+		letter-spacing: 0.16em;
+		line-height: 1;
+		color: var(--text-primary);
+	}
+
+	.brand-copy span {
+		font-family: var(--font-mono);
+		font-size: 0.58rem;
+		letter-spacing: 0.18em;
+		line-height: 1;
+		color: var(--amber-bright);
+	}
+
+	.nav-links {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+	}
+
+	.nav-links a {
+		position: relative;
+		padding: 8px 14px;
+		border-radius: 999px;
+		font-size: 0.83rem;
+		font-weight: 500;
+		text-decoration: none;
+		color: var(--text-secondary);
+		transition:
+			color 200ms ease,
+			background-color 200ms ease;
+	}
+
+	.nav-links a:hover,
+	.nav-links a:focus-visible {
+		color: var(--text-primary);
+		background: rgba(255, 255, 255, 0.05);
+	}
+
+	.nav-links a.is-active {
+		color: var(--amber-core);
+		background: rgba(245, 158, 11, 0.13);
+		box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.28);
+	}
+
+	.topbar-actions {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+	}
+
+	.observatory-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		padding: 8px 12px;
+		border-radius: 999px;
+		border: 1px solid rgba(148, 163, 184, 0.22);
+		background: rgba(15, 23, 42, 0.55);
+		color: var(--text-secondary);
+		font-family: var(--font-mono);
+		font-size: 0.72rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		cursor: pointer;
+		transition:
+			color 200ms ease,
+			border-color 200ms ease,
+			background-color 200ms ease,
+			transform 200ms ease;
+	}
+
+	.observatory-btn svg {
+		width: 16px;
+		height: 16px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.7;
+	}
+
+	.observatory-btn:hover,
+	.observatory-btn.is-active {
+		color: var(--amber-core);
+		border-color: var(--border-glow);
+		background: rgba(245, 158, 11, 0.18);
+	}
+
+	.cv-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 9px 17px;
+		border-radius: 999px;
+		border: 1px solid rgba(251, 191, 36, 0.46);
+		background: linear-gradient(135deg, rgba(245, 158, 11, 0.24) 0%, rgba(180, 83, 9, 0.34) 100%);
+		color: var(--amber-core);
+		text-decoration: none;
+		font-size: 0.8rem;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		box-shadow:
+			0 8px 24px rgba(245, 158, 11, 0.18),
+			inset 0 1px 0 rgba(255, 244, 214, 0.22);
+		transition:
+			transform 200ms ease,
+			box-shadow 200ms ease,
+			border-color 200ms ease,
+			background 200ms ease;
+	}
+
+	.cv-button svg {
+		width: 15px;
+		height: 15px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.cv-button:hover {
+		transform: translateY(-1px);
+		border-color: var(--amber-core);
+		background: linear-gradient(135deg, rgba(245, 158, 11, 0.38) 0%, rgba(217, 119, 6, 0.48) 100%);
+		box-shadow:
+			0 12px 28px rgba(245, 158, 11, 0.32),
+			inset 0 1px 0 rgba(255, 244, 214, 0.35);
+	}
+
+	@media (max-width: 1040px) {
+		.topbar {
+			grid-template-columns: 1fr;
+			justify-items: center;
+			gap: 12px;
+			border-radius: 26px;
+			padding: 14px 16px;
+		}
+
+		.nav-links {
+			flex-wrap: wrap;
+			gap: 4px;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.topbar {
+			top: 12px;
+			margin-bottom: 24px;
+			padding: 12px;
+		}
+
+		.nav-links a {
+			padding: 6px 10px;
+			font-size: 0.77rem;
+		}
+
+		.cv-button {
+			padding: 8px 14px;
+			font-size: 0.76rem;
+		}
+	}
+</style>

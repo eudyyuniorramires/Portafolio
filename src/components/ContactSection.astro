@@ -1,0 +1,315 @@
+---
+const contactChannels = [
+	{
+		label: 'CORREO ELECTRÓNICO',
+		value: 'eudyyuniorramires@gmail.com',
+		href: 'mailto:eudyyuniorramires@gmail.com',
+		icon: 'mail',
+		external: false
+	},
+	{
+		label: 'TELÉFONO / WHATSAPP',
+		value: '849-357-5980',
+		href: 'tel:+18493575980',
+		icon: 'phone',
+		external: false
+	},
+	{
+		label: 'LINKEDIN',
+		value: 'linkedin.com/in/eudy-yunior-lorenzo-ramirez-aa9082288',
+		href: 'https://www.linkedin.com/in/eudy-yunior-lorenzo-ramirez-aa9082288',
+		icon: 'linkedin',
+		external: true
+	},
+	{
+		label: 'GITHUB',
+		value: 'github.com/eudyyuniorramires',
+		href: 'https://github.com/eudyyuniorramires',
+		icon: 'github',
+		external: true
+	}
+];
+---
+
+<section class="contact-section" id="contacto" data-reveal-section>
+	<div class="contact-panel space-card">
+		<div class="contact-copy">
+			<p class="section-kicker">TRANSMISIÓN ABIERTA · CONTACTO</p>
+			<h2 class="section-heading">
+				Listo para impulsar proyectos donde la arquitectura y la experiencia importan
+			</h2>
+			<p class="contact-lead">
+				Actualmente disponible como <strong>Desarrollador Full Stack</strong> desde
+				<strong>Santo Domingo Este, República Dominicana</strong>, para colaborar en equipos de
+				ingeniería de software, desarrollo .NET + React e integración de datos.
+			</p>
+
+			<div class="contact-actions">
+				<a
+					class="cv-download-large"
+					href="/eudy-yunior-lorenzo-ramirez-cv.pdf"
+					download="Eudy-Yunior-Lorenzo-Ramirez-CV.pdf"
+				>
+					<svg viewBox="0 0 24 24" aria-hidden="true">
+						<path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14"></path>
+					</svg>
+					<span>Descargar CV en PDF</span>
+				</a>
+
+				<a class="direct-mail-btn" href="mailto:eudyyuniorramires@gmail.com">
+					<span>Iniciar conversación</span>
+				</a>
+			</div>
+		</div>
+
+		<div class="contact-list">
+			{
+				contactChannels.map((item) => (
+					<a
+						class="contact-card space-card"
+						href={item.href}
+						target={item.external ? '_blank' : undefined}
+						rel={item.external ? 'noopener noreferrer' : undefined}
+						data-reveal-card
+					>
+						<div class="contact-icon" aria-hidden="true">
+							{item.icon === 'mail' && (
+								<svg viewBox="0 0 24 24">
+									<rect x="3" y="5" width="18" height="14" rx="2" />
+									<path d="m3 7 9 6 9-6" />
+								</svg>
+							)}
+							{item.icon === 'phone' && (
+								<svg viewBox="0 0 24 24">
+									<path d="M6.6 4h3.4l1.3 4.2-2.1 1.8a13.5 13.5 0 0 0 5.8 5.8l1.8-2.1L21 15v3.4a2 2 0 0 1-2.2 2A16.8 16.8 0 0 1 4.6 6.2 2 2 0 0 1 6.6 4Z" />
+								</svg>
+							)}
+							{item.icon === 'linkedin' && (
+								<svg viewBox="0 0 24 24">
+									<rect x="3" y="3" width="18" height="18" rx="3" />
+									<path d="M8 11v5M8 8v.01M12 16v-5c0-1.4 1-2.2 2.2-2.2S16.5 9.6 16.5 11v5" />
+								</svg>
+							)}
+							{item.icon === 'github' && (
+								<svg viewBox="0 0 24 24">
+									<path d="M12 3a9 9 0 0 0-2.85 17.54c.45.08.62-.2.62-.44v-1.7c-2.5.54-3.03-1.08-3.03-1.08-.41-1.04-1-1.32-1-1.32-.82-.56.06-.55.06-.55.9.06 1.38.93 1.38.93.8 1.38 2.1.98 2.62.75.08-.58.31-.98.57-1.2-2-.23-4.1-1-4.1-4.43 0-.98.35-1.78.93-2.41-.1-.23-.4-1.15.09-2.4 0 0 .75-.24 2.47.92a8.56 8.56 0 0 1 4.5 0c1.72-1.16 2.47-.92 2.47-.92.49 1.25.19 2.17.09 2.4.58.63.93 1.43.93 2.41 0 3.44-2.1 4.2-4.11 4.42.32.28.61.83.61 1.67v2.47c0 .24.16.53.62.44A9 9 0 0 0 12 3Z" />
+								</svg>
+							)}
+						</div>
+
+						<div class="contact-meta">
+							<span>{item.label}</span>
+							<strong>{item.value}</strong>
+						</div>
+
+						<span class="contact-arrow" aria-hidden="true">↗</span>
+					</a>
+				))
+			}
+		</div>
+	</div>
+
+	<footer class="space-footer">
+		<p>
+			© 2026 <strong>Eudy Yunior Lorenzo Ramirez</strong> · Desarrollador Full Stack · Santo Domingo
+			Este, RD
+		</p>
+		<p class="footer-telemetry">GARGANTUA ENGINE // ASTRO 5 · THREE.JS · GLSL · GSAP</p>
+	</footer>
+</section>
+
+<style>
+	.contact-section {
+		padding: 46px 0 64px;
+	}
+
+	.contact-panel {
+		padding: 36px;
+		display: grid;
+		grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+		gap: 32px;
+		align-items: center;
+		background: rgba(7, 10, 20, 0.76);
+	}
+
+	.contact-panel:hover {
+		transform: none;
+	}
+
+	.contact-lead {
+		margin-top: 14px;
+		font-size: 0.97rem;
+		line-height: 1.68;
+		color: var(--text-secondary);
+		max-width: 540px;
+	}
+
+	.contact-lead strong {
+		color: var(--amber-core);
+	}
+
+	.contact-actions {
+		margin-top: 24px;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+	}
+
+	.cv-download-large,
+	.direct-mail-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 9px;
+		padding: 12px 20px;
+		border-radius: 999px;
+		font-size: 0.85rem;
+		font-weight: 600;
+		text-decoration: none;
+		transition:
+			transform 200ms ease,
+			box-shadow 200ms ease,
+			border-color 200ms ease;
+	}
+
+	.cv-download-large {
+		background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+		color: #090b10;
+		border: 1px solid rgba(255, 244, 214, 0.55);
+		box-shadow: 0 12px 28px rgba(245, 158, 11, 0.28);
+	}
+
+	.cv-download-large svg {
+		width: 17px;
+		height: 17px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2.1;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.cv-download-large:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 16px 36px rgba(245, 158, 11, 0.44);
+	}
+
+	.direct-mail-btn {
+		background: rgba(15, 23, 42, 0.72);
+		border: 1px solid var(--border-subtle);
+		color: var(--text-primary);
+	}
+
+	.direct-mail-btn:hover {
+		transform: translateY(-2px);
+		border-color: var(--border-glow);
+		color: var(--amber-core);
+	}
+
+	.contact-list {
+		display: grid;
+		gap: 12px;
+	}
+
+	.contact-card {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 14px;
+		padding: 16px 18px;
+		border-radius: 18px;
+		text-decoration: none;
+		background: rgba(11, 16, 30, 0.78);
+	}
+
+	.contact-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 42px;
+		height: 42px;
+		border-radius: 12px;
+		background: var(--amber-soft);
+		border: 1px solid rgba(251, 191, 36, 0.28);
+		color: var(--amber-bright);
+	}
+
+	.contact-icon svg {
+		width: 19px;
+		height: 19px;
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.75;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+
+	.contact-meta {
+		display: grid;
+		gap: 3px;
+		min-width: 0;
+	}
+
+	.contact-meta span {
+		font-family: var(--font-mono);
+		font-size: 0.65rem;
+		letter-spacing: 0.16em;
+		color: var(--text-muted);
+	}
+
+	.contact-meta strong {
+		font-size: 0.86rem;
+		color: var(--text-primary);
+		word-break: break-word;
+	}
+
+	.contact-arrow {
+		font-family: var(--font-mono);
+		font-size: 0.95rem;
+		color: var(--amber-bright);
+		opacity: 0.75;
+		transition: transform 200ms ease, opacity 200ms ease;
+	}
+
+	.contact-card:hover .contact-arrow {
+		transform: translate(2px, -2px);
+		opacity: 1;
+	}
+
+	.space-footer {
+		margin-top: 34px;
+		padding-top: 20px;
+		border-top: 1px solid rgba(255, 226, 179, 0.1);
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		font-size: 0.82rem;
+		color: var(--text-muted);
+	}
+
+	.space-footer strong {
+		color: var(--text-secondary);
+	}
+
+	.footer-telemetry {
+		font-family: var(--font-mono);
+		font-size: 0.68rem;
+		letter-spacing: 0.16em;
+		color: var(--amber-bright);
+	}
+
+	@media (max-width: 1024px) {
+		.contact-panel {
+			grid-template-columns: 1fr;
+			padding: 26px 22px;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.space-footer {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+</style>
