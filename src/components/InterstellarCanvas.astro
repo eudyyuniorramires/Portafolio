@@ -467,52 +467,141 @@
 		scene.add(starFillLight);
 
 		// ==========================================
-		// 5. NAVE ANULAR ENDURANCE (3D PROCEDURAL)
+		// 5. NAVE ANULAR ENDURANCE (CON ILUMINACIÓN DE PELÍCULA)
 		// ==========================================
 		const enduranceAnchor = new THREE.Group();
 		enduranceAnchor.position.set(-2.35, -0.45, 2.4);
 		enduranceAnchor.rotation.set(0.36, 0.52, -0.18);
 		scene.add(enduranceAnchor);
 
+		// Reflectores propios de a bordo de la Endurance (bañan el casco cerámico blanco/plata y el hub central)
+		const shipFloodLightFront = new THREE.PointLight(0xdbeafe, 5.2, 7.5, 1.45);
+		shipFloodLightFront.position.set(0.35, 0.35, 1.65);
+		enduranceAnchor.add(shipFloodLightFront);
+
+		const shipFloodLightHub = new THREE.PointLight(0xfff0d4, 4.0, 5.5, 1.5);
+		shipFloodLightHub.position.set(-0.2, -0.15, 0.55);
+		enduranceAnchor.add(shipFloodLightHub);
+
+		const shipWarmRimBounce = new THREE.PointLight(0xffb84d, 4.5, 7.0, 1.4);
+		shipWarmRimBounce.position.set(0.8, -0.5, -1.5);
+		enduranceAnchor.add(shipWarmRimBounce);
+
 		// Subgrupo rotatorio (los 12 módulos giran generando gravedad artificial ~5.5 RPM)
 		const enduranceRing = new THREE.Group();
 		enduranceAnchor.add(enduranceRing);
 
-		const hullDarkMat = new THREE.MeshStandardMaterial({
-			color: 0x0b0f17,
-			metalness: 0.9,
-			roughness: 0.24
+		// Materiales aeroespaciales tipo NASA / Endurance (losetas cerámicas blancas/plata + blindaje grafito)
+		const hullCeramicMat = new THREE.MeshStandardMaterial({
+			color: 0xd0d8e5,
+			metalness: 0.38,
+			roughness: 0.36,
+			emissive: 0x111827,
+			emissiveIntensity: 0.28
 		});
 
 		const hullAlloyMat = new THREE.MeshStandardMaterial({
+			color: 0x8b98ad,
+			metalness: 0.58,
+			roughness: 0.28,
+			emissive: 0x0f172a,
+			emissiveIntensity: 0.22
+		});
+
+		const hullDarkMat = new THREE.MeshStandardMaterial({
 			color: 0x1e2636,
-			metalness: 0.92,
-			roughness: 0.18
+			metalness: 0.72,
+			roughness: 0.32
 		});
 
 		const solarPanelMat = new THREE.MeshStandardMaterial({
-			color: 0x070b14,
-			metalness: 0.96,
-			roughness: 0.12
+			color: 0x091224,
+			metalness: 0.88,
+			roughness: 0.16,
+			emissive: 0x0a192f,
+			emissiveIntensity: 0.25
 		});
 
-		const cabinBeaconMat = new THREE.MeshBasicMaterial({
-			color: 0xffd27d
+		// Materiales emisivos de ventanas, reflectores y luces de acoplamiento
+		const warmCabinWindowMat = new THREE.MeshBasicMaterial({
+			color: 0xfff3d1
 		});
 
-		const navCyanMat = new THREE.MeshBasicMaterial({
-			color: 0x38bdf8
+		const coolLabWindowMat = new THREE.MeshBasicMaterial({
+			color: 0xe0f2fe
+		});
+
+		const floodBarMat = new THREE.MeshBasicMaterial({
+			color: 0xffffff
+		});
+
+		const dockCyanLightMat = new THREE.MeshBasicMaterial({
+			color: 0x7dd3fc
+		});
+
+		const navRedMat = new THREE.MeshBasicMaterial({
+			color: 0xff4d4d
+		});
+
+		const navGreenMat = new THREE.MeshBasicMaterial({
+			color: 0x34d399
 		});
 
 		const moduleCount = 12;
 		const ringRadius = 1.38;
 
 		const podGeo = new THREE.BoxGeometry(0.3, 0.19, 0.22);
-		const podCapGeo = new THREE.BoxGeometry(0.22, 0.21, 0.14);
-		const innerSolarGeo = new THREE.BoxGeometry(0.24, 0.02, 0.16);
-		const windowGeo = new THREE.BoxGeometry(0.055, 0.018, 0.015);
+		const podCapGeo = new THREE.BoxGeometry(0.22, 0.21, 0.13);
+		const innerSolarSideGeo = new THREE.BoxGeometry(0.085, 0.018, 0.16);
+		const frontWindowGeo = new THREE.BoxGeometry(0.042, 0.018, 0.008);
+		const wideWindowGeo = new THREE.BoxGeometry(0.068, 0.02, 0.008);
+		const innerDeckWindowGeo = new THREE.BoxGeometry(0.075, 0.008, 0.032);
+		const floodStripGeo = new THREE.BoxGeometry(0.14, 0.01, 0.01);
+		const beaconDotGeo = new THREE.SphereGeometry(0.013, 8, 8);
 		const tunnelGeo = new THREE.CylinderGeometry(0.046, 0.046, 0.46, 14);
 		const collarGeo = new THREE.CylinderGeometry(0.068, 0.068, 0.05, 14);
+		const collarLightRingGeo = new THREE.TorusGeometry(0.069, 0.006, 8, 20);
+
+		// Acumulador de puntos luminosos con halo óptico (giran solidarios con enduranceRing)
+		const lightPosList: number[] = [];
+		const lightColList: number[] = [];
+		const lightSizeList: number[] = [];
+		const lightStrobeList: number[] = [];
+
+		const pushShipLight = (
+			x: number,
+			y: number,
+			z: number,
+			hex: string,
+			size: number,
+			isStrobe = false,
+			phase = 0
+		) => {
+			const c = new THREE.Color(hex);
+			lightPosList.push(x, y, z);
+			lightColList.push(c.r, c.g, c.b);
+			lightSizeList.push(size);
+			lightStrobeList.push(isStrobe ? 1.0 : 0.0, phase);
+		};
+
+		// Transforma coordenadas locales de un módulo a coordenadas de enduranceRing
+		const addPodLocalLight = (
+			theta: number,
+			lx: number,
+			ly: number,
+			lz: number,
+			hex: string,
+			size: number,
+			isStrobe = false,
+			phase = 0
+		) => {
+			const rot = theta + Math.PI / 2;
+			const cosR = Math.cos(rot);
+			const sinR = Math.sin(rot);
+			const wx = Math.cos(theta) * ringRadius + (lx * cosR - ly * sinR);
+			const wy = Math.sin(theta) * ringRadius + (lx * sinR + ly * cosR);
+			pushShipLight(wx, wy, lz, hex, size, isStrobe, phase);
+		};
 
 		for (let i = 0; i < moduleCount; i++) {
 			const theta = (i / moduleCount) * Math.PI * 2;
@@ -523,34 +612,104 @@
 				Math.sin(theta) * ringRadius,
 				0
 			);
-			// Orientar tangencialmente al anillo
+			// Orientar tangencialmente al anillo (+Y radial exterior, -Y radial interior hacia el hub, ±Z caras laterales)
 			podCluster.rotation.z = theta + Math.PI / 2;
 
-			// Módulo habitable principal
-			const podMesh = new THREE.Mesh(podGeo, i % 2 === 0 ? hullAlloyMat : hullDarkMat);
+			// Módulo habitable principal (alternando losetas cerámicas blancas y aleación clara como en la película)
+			const podMesh = new THREE.Mesh(podGeo, i % 3 === 0 ? hullAlloyMat : hullCeramicMat);
 			podCluster.add(podMesh);
 
-			// Escudo térmico / bisel estructural
+			// Escudo térmico exterior / módulo de servicio
 			const capMesh = new THREE.Mesh(podCapGeo, hullDarkMat);
-			capMesh.position.y = 0.02;
+			capMesh.position.y = 0.022;
 			podCluster.add(capMesh);
 
-			// Panel radiador interior mirando hacia el centro del anillo
-			const solarMesh = new THREE.Mesh(innerSolarGeo, solarPanelMat);
-			solarMesh.position.y = -0.105;
-			podCluster.add(solarMesh);
+			// Dos paneles solares oscuros interiores flanqueando las ventanas centrales de observación
+			const solarLeft = new THREE.Mesh(innerSolarSideGeo, solarPanelMat);
+			solarLeft.position.set(-0.088, -0.098, 0);
+			podCluster.add(solarLeft);
 
-			// Luces diminutas de cabina / telemetría
-			if (i % 3 === 0) {
-				const win = new THREE.Mesh(windowGeo, cabinBeaconMat);
-				win.position.set(0.06, -0.095, 0.08);
-				podCluster.add(win);
+			const solarRight = new THREE.Mesh(innerSolarSideGeo, solarPanelMat);
+			solarRight.position.set(0.088, -0.098, 0);
+			podCluster.add(solarRight);
+
+			// 1) Ventanas interiores de techo/observación mirando al eje central (exacto al diseño de la Endurance)
+			const innerWinA = new THREE.Mesh(innerDeckWindowGeo, warmCabinWindowMat);
+			innerWinA.position.set(0, -0.098, 0.036);
+			podCluster.add(innerWinA);
+
+			const innerWinB = new THREE.Mesh(innerDeckWindowGeo, coolLabWindowMat);
+			innerWinB.position.set(0, -0.098, -0.036);
+			podCluster.add(innerWinB);
+
+			addPodLocalLight(theta, 0, -0.112, 0.036, '#fff2cc', 1.45, false, i * 0.5);
+
+			// 2) Filas de ventanas iluminadas en las caras frontal (+Z) y posterior (-Z) de TODOS los módulos
+			for (const zSign of [1, -1]) {
+				const zFace = zSign * 0.113;
+
+				// Tres ventanas superiores de cabina por módulo
+				for (const xOff of [-0.075, 0, 0.075]) {
+					const winMat = (i + Math.round(xOff * 20)) % 2 === 0 ? warmCabinWindowMat : coolLabWindowMat;
+					const win = new THREE.Mesh(frontWindowGeo, winMat);
+					win.position.set(xOff, -0.028, zFace);
+					podCluster.add(win);
+				}
+
+				// Ventana panorámica inferior de laboratorio
+				const labWin = new THREE.Mesh(wideWindowGeo, i % 2 === 0 ? warmCabinWindowMat : coolLabWindowMat);
+				labWin.position.set(i % 2 === 0 ? -0.035 : 0.035, -0.064, zFace);
+				podCluster.add(labWin);
+
+				// Barra reflectora blanca de iluminación de casco (work floodlight)
+				const floodBar = new THREE.Mesh(floodStripGeo, floodBarMat);
+				floodBar.position.set(0, 0.066, zFace);
+				podCluster.add(floodBar);
+
+				// Halos ópticos suaves sobre las ventanas y reflectores de cada módulo
+				addPodLocalLight(
+					theta,
+					0,
+					-0.03,
+					zSign * 0.128,
+					i % 2 === 0 ? '#ffe8b3' : '#d8f3ff',
+					1.65,
+					false,
+					i * 0.7 + zSign
+				);
+				addPodLocalLight(
+					theta,
+					0,
+					0.066,
+					zSign * 0.128,
+					'#ffffff',
+					1.35,
+					false,
+					i * 0.4
+				);
 			}
-			if (i % 4 === 0) {
-				const beacon = new THREE.Mesh(windowGeo, navCyanMat);
-				beacon.scale.set(0.5, 0.8, 0.8);
-				beacon.position.set(-0.08, 0.102, 0.0);
-				podCluster.add(beacon);
+
+			// 3) Balizas estroboscópicas aeroespaciales de navegación en los 4 módulos cardinales (estilo aviación/NASA)
+			if (i % 3 === 0) {
+				const isPort = i === 0 || i === 6;
+				const beaconMesh = new THREE.Mesh(
+					beaconDotGeo,
+					i === 0 ? navRedMat : i === 6 ? navGreenMat : floodBarMat
+				);
+				beaconMesh.position.set(0, 0.136, 0.055);
+				podCluster.add(beaconMesh);
+
+				const strobeColor = i === 0 ? '#ff5555' : i === 6 ? '#34d399' : '#ffffff';
+				addPodLocalLight(
+					theta,
+					0,
+					0.145,
+					0.062,
+					strobeColor,
+					isPort ? 2.6 : 3.0,
+					true,
+					(i / moduleCount) * 0.5
+				);
 			}
 
 			enduranceRing.add(podCluster);
@@ -567,7 +726,7 @@
 			);
 			tunnelGroup.rotation.z = midAngle;
 
-			const tunnelMesh = new THREE.Mesh(tunnelGeo, hullAlloyMat);
+			const tunnelMesh = new THREE.Mesh(tunnelGeo, hullCeramicMat);
 			tunnelGroup.add(tunnelMesh);
 
 			const collarA = new THREE.Mesh(collarGeo, hullDarkMat);
@@ -578,13 +737,24 @@
 			collarB.position.y = -0.15;
 			tunnelGroup.add(collarB);
 
+			// Anillos luminosos de presurización en las esclusas de cada módulo
+			const ringLightA = new THREE.Mesh(collarLightRingGeo, dockCyanLightMat);
+			ringLightA.rotation.x = Math.PI / 2;
+			ringLightA.position.y = 0.176;
+			tunnelGroup.add(ringLightA);
+
+			const ringLightB = new THREE.Mesh(collarLightRingGeo, dockCyanLightMat);
+			ringLightB.rotation.x = Math.PI / 2;
+			ringLightB.position.y = -0.176;
+			tunnelGroup.add(ringLightB);
+
 			enduranceRing.add(tunnelGroup);
 		}
 
 		// Eje central de acoplamiento (Central Docking Hub) y brazos radiales principales
 		const hubCore = new THREE.Mesh(
 			new THREE.CylinderGeometry(0.22, 0.22, 0.2, 24),
-			hullAlloyMat
+			hullCeramicMat
 		);
 		hubCore.rotation.x = Math.PI / 2;
 		enduranceRing.add(hubCore);
@@ -600,25 +770,124 @@
 		hubDockRingBack.position.z = -0.11;
 		enduranceRing.add(hubDockRingBack);
 
+		// Corona icónica de luces de alineación de acoplamiento en el puerto central (escena de spin-docking)
+		const dockRingLightCount = 8;
+		for (let k = 0; k < dockRingLightCount; k++) {
+			const ang = (k / dockRingLightCount) * Math.PI * 2;
+			const lx = Math.cos(ang) * 0.17;
+			const ly = Math.sin(ang) * 0.17;
+
+			const dockLamp = new THREE.Mesh(
+				new THREE.SphereGeometry(0.01, 8, 8),
+				k % 2 === 0 ? floodBarMat : dockCyanLightMat
+			);
+			dockLamp.position.set(lx, ly, 0.132);
+			enduranceRing.add(dockLamp);
+
+			pushShipLight(lx, ly, 0.142, k % 2 === 0 ? '#fff7e6' : '#7dd3fc', 1.55, false, k * 0.8);
+			pushShipLight(lx, ly, -0.142, '#fff7e6', 1.25, false, k * 0.8);
+		}
+
+		// Faro central guía de acoplamiento
+		pushShipLight(0, 0, 0.145, '#e0f2fe', 2.2, false, 0);
+
 		// Dos túneles radiales principales opuestos + dos tensores estructurales perpendiculares
 		const mainSpokeGeo = new THREE.CylinderGeometry(0.056, 0.056, ringRadius * 1.88, 16);
-		const mainSpoke = new THREE.Mesh(mainSpokeGeo, hullAlloyMat);
+		const mainSpoke = new THREE.Mesh(mainSpokeGeo, hullCeramicMat);
 		enduranceRing.add(mainSpoke);
 
+		// Luces de guía a lo largo del túnel radial central
+		for (const yPos of [-0.85, -0.48, 0.48, 0.85]) {
+			pushShipLight(0, yPos, 0.072, '#fff0c8', 1.2, false, yPos * 2.0);
+		}
+
 		const crossStrutGeo = new THREE.CylinderGeometry(0.022, 0.022, ringRadius * 1.88, 10);
-		const crossStrut = new THREE.Mesh(crossStrutGeo, hullDarkMat);
+		const crossStrut = new THREE.Mesh(crossStrutGeo, hullAlloyMat);
 		crossStrut.rotation.z = Math.PI / 2;
 		enduranceRing.add(crossStrut);
 
-		// Silueta de nave Ranger acoplada cerca del hub central
+		// Nave Ranger acoplada cerca del hub central con escudo blanco y cabina iluminada
+		const rangerGroup = new THREE.Group();
+		rangerGroup.position.set(0.0, 0.36, 0.15);
+		enduranceRing.add(rangerGroup);
+
 		const rangerHull = new THREE.Mesh(
-			new THREE.ConeGeometry(0.09, 0.28, 4),
-			hullDarkMat
+			new THREE.ConeGeometry(0.095, 0.29, 4),
+			hullCeramicMat
 		);
-		rangerHull.scale.set(1.15, 1.0, 0.42);
-		rangerHull.position.set(0.0, 0.36, 0.14);
+		rangerHull.scale.set(1.18, 1.0, 0.42);
 		rangerHull.rotation.z = Math.PI;
-		enduranceRing.add(rangerHull);
+		rangerGroup.add(rangerHull);
+
+		const rangerCanopy = new THREE.Mesh(
+			new THREE.BoxGeometry(0.055, 0.032, 0.018),
+			warmCabinWindowMat
+		);
+		rangerCanopy.position.set(0, -0.02, 0.038);
+		rangerGroup.add(rangerCanopy);
+		pushShipLight(0.0, 0.34, 0.2, '#ffe9b0', 1.8, false, 1.2);
+
+		// Sistema de Halos Ópticos IMAX para todas las luces de la Endurance
+		const shipLightsGeo = new THREE.BufferGeometry();
+		shipLightsGeo.setAttribute('position', new THREE.Float32BufferAttribute(lightPosList, 3));
+		shipLightsGeo.setAttribute('aLightColor', new THREE.Float32BufferAttribute(lightColList, 3));
+		shipLightsGeo.setAttribute('aLightSize', new THREE.Float32BufferAttribute(lightSizeList, 1));
+		shipLightsGeo.setAttribute('aStrobe', new THREE.Float32BufferAttribute(lightStrobeList, 2));
+
+		const shipLightMat = new THREE.ShaderMaterial({
+			transparent: true,
+			depthWrite: false,
+			blending: THREE.AdditiveBlending,
+			uniforms: {
+				uTime: { value: 0 },
+				uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) }
+			},
+			vertexShader: /* glsl */ `
+				attribute vec3 aLightColor;
+				attribute float aLightSize;
+				attribute vec2 aStrobe;
+				uniform float uTime;
+				uniform float uPixelRatio;
+				varying vec3 vColor;
+				varying float vIntensity;
+
+				void main() {
+					vColor = aLightColor;
+					if (aStrobe.x > 0.5) {
+						float cycle = mod(uTime * 0.92 + aStrobe.y, 1.0);
+						float flash1 = smoothstep(0.0, 0.025, cycle) * smoothstep(0.10, 0.035, cycle);
+						float flash2 = smoothstep(0.15, 0.175, cycle) * smoothstep(0.25, 0.185, cycle);
+						vIntensity = 0.16 + 2.1 * max(flash1, flash2);
+					} else {
+						vIntensity = 0.92 + 0.08 * sin(uTime * 2.4 + aStrobe.y);
+					}
+					vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+					gl_PointSize = aLightSize * uPixelRatio * (56.0 / max(-mvPosition.z, 2.5));
+					gl_Position = projectionMatrix * mvPosition;
+				}
+			`,
+			fragmentShader: /* glsl */ `
+				varying vec3 vColor;
+				varying float vIntensity;
+
+				void main() {
+					vec2 uv = gl_PointCoord - vec2(0.5);
+					float d = length(uv);
+					if (d > 0.5) discard;
+
+					float core = exp(-d * d * 40.0);
+					float halo = pow(max(0.0, 1.0 - d * 2.0), 2.5) * 0.72;
+					float anamorphic = exp(-abs(uv.y) * 24.0) * exp(-abs(uv.x) * 5.0) * 0.42;
+
+					float brightness = (core + halo + anamorphic) * vIntensity;
+					vec3 col = mix(vColor, vec3(1.0, 0.98, 0.94), clamp(core * 0.85, 0.0, 1.0));
+					gl_FragColor = vec4(col * brightness, clamp(brightness, 0.0, 1.0));
+				}
+			`
+		});
+
+		const enduranceLightsPoints = new THREE.Points(shipLightsGeo, shipLightMat);
+		enduranceRing.add(enduranceLightsPoints);
 
 		// ==========================================
 		// 6. COREOGRAFÍA DE CÁMARA Y NAVE CON GSAP SCROLLTRIGGER
@@ -902,6 +1171,7 @@
 			renderer.setPixelRatio(pr);
 			starMaterial.uniforms.uPixelRatio.value = pr;
 			emberMat.uniforms.uPixelRatio.value = pr;
+			shipLightMat.uniforms.uPixelRatio.value = pr;
 			ScrollTrigger.refresh();
 		};
 
@@ -919,11 +1189,12 @@
 			const elapsed = clock.elapsedTime;
 			const motionFactor = prefersReducedMotion ? 0.15 : 1.0;
 
-			// Actualizar shaders relativistas y estelares
+			// Actualizar shaders relativistas, estelares y luces de la Endurance
 			const activeTime = elapsed * motionFactor;
 			starMaterial.uniforms.uTime.value = activeTime;
 			diskMat.uniforms.uTime.value = activeTime;
 			lensingMat.uniforms.uTime.value = activeTime;
+			shipLightMat.uniforms.uTime.value = activeTime;
 
 			// Rotación continua de la nave Endurance (~5.5 RPM) + ángulo directo de scroll + inercia
 			idleSpin += delta * (0.34 + scrollState.spinBoost * 0.55) * motionFactor;
